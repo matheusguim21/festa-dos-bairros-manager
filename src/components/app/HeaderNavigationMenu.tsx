@@ -1,11 +1,17 @@
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@radix-ui/react-navigation-menu";
 import { Box, Home } from "lucide-react";
-import { NavLink } from "./app/nav-link";
+import { NavLink } from "./nav-link";
+import logoFesta from "@/assets/logo-festa.png"
 
 export function HeaderNavigationMenu(){
   return(
-    <NavigationMenu>
-      <NavigationMenuList className="flex justify-center gap-10 p-5">
+    <NavigationMenu className="bg-primary flex justify-between items-center px-5">
+      <img
+      src={logoFesta}
+      width={50}
+      height={30}
+      />
+      <NavigationMenuList className="flex  gap-10 p-5">
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <NavLink to={"/"}>
@@ -19,6 +25,14 @@ export function HeaderNavigationMenu(){
             <NavLink to={"/estoque"}>
               <Box/>
               <span>Estoque</span>
+            </NavLink>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <NavLink to={"/vendas"}>
+              <Box/>
+              <span>Vendas</span>
             </NavLink>
           </NavigationMenuLink>
         </NavigationMenuItem>

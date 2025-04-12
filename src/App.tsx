@@ -1,13 +1,16 @@
+// App.tsx
+import { BrowserRouter } from "react-router";
 import { AppRoutes } from "./routes";
+import { HelmetProvider, Helmet } from "react-helmet-async";
+import "./global.css";
 
-
-import "./global.css"
-
-export  function App() {
-
+export function App() {
   return (
-    <AppRoutes/>
-  )
+    <HelmetProvider>
+      <BrowserRouter>
+        <Helmet titleTemplate="%s | Festa dos Bairros"  />
+        <AppRoutes />
+      </BrowserRouter>
+    </HelmetProvider>
+  );  
 }
-
-

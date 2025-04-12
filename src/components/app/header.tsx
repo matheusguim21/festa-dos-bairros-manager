@@ -1,5 +1,4 @@
-import { HeaderNavigationMenu } from "../HeaderNavigationMenu";
-import { NavigationMenu } from "../ui/navigation-menu";
+import { HeaderNavigationMenu } from "./HeaderNavigationMenu";
 
 
 
