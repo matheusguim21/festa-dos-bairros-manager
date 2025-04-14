@@ -1,40 +1,36 @@
-import StockTable from "@/components/stock/StockTable";
+import { AddProductModal } from "@/components/modals/AddProductModal";
+import StockTable from "@/components/tables/StockTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { products } from "@/utils/fakerjs/products";
 import { Plus, Search } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
-export function Stock(){
-
-
-
-  return(
-    <main className="px-16 gap-5 flex flex-col">
-        <Helmet
-            title="Estoque"
-              />
-      <section className="flex mx-auto flex-col items-center">
+export function Stock() {
+  return (
+    <main className="flex flex-col gap-5 px-16">
+      <Helmet title="Estoque" />
+      <section className="mx-auto flex flex-col items-center">
         <h1 className="text-3xl font-bold text-muted-foreground">Estoque</h1>
       </section>
 
       <section>
         <div className="flex">
-       <div className="flex-row flex border-0 justify-between flex-1">
-         <div className="flex border w-96 bg-secondary rounded-xl items-center px-3 gap-4"> 
-          <Input  className="border-0 placeholder:text-gray-400" placeholder="nome ou código do produto" />
-          <Search className="text-gray-400 cursor-pointer"/>
+          <div className="flex flex-1 flex-row justify-between border-0">
+            <div className="flex w-96 items-center gap-4 rounded-xl border bg-secondary px-3">
+              <Input
+                className="border-0 placeholder:text-gray-400"
+                placeholder="nome ou código do produto"
+              />
+              <Search className="cursor-pointer text-gray-400" />
+            </div>
+            <AddProductModal />
           </div>
-            <Button >
-              <Plus size={20}/>
-              <span className="uppercase text-muted">adicionar</span>
-            </Button>
-       </div>
         </div>
-       </section>
-       <section>
-        <StockTable products={products}/>
-       </section>
+      </section>
+      <section>
+        <StockTable products={products} />
+      </section>
     </main>
-  )
+  );
 }
