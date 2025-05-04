@@ -18,43 +18,66 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Button } from "../ui/button";
-import { AlertDemo } from "../test/AlertDemo";
 import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { createStockItem } from "@/api/stockService";
 
 const AddProductSchema = z.object({
-  productName: z.string(),
+  productName: z.string({
+    message: "Campo obrigatório",
+  }),
   productAmount: z.coerce.number(),
-  measureUnity: z.string(),
-  productImage: z
-    .instanceof(File)
-    .refine(
-      (file) =>
-        [
-          "image/png",
-          "image/jpeg",
-          "image/jpg",
-          "image/svg+xml",
-          "image/gif",
-        ].includes(file.type),
-      { message: "Invalid image file type" },
-    ),
+  measureUnity: z.string({
+    message: "Campo obrigatório",
+  }),
+  // productImage: z
+  //   .instanceof(File, {
+  //     message: "Campo obrigatório",
+  //   })
+  //   .refine(
+  //     (file) =>
+  //       [
+  //         "image/png",
+  //         "image/jpeg",
+  //         "image/jpg",
+  //         "image/svg+xml",
+  //         "image/gif",
+  //       ].includes(file.type),
+  //     { message: "Arquivo inválido" },
+  //   )
+  //   .optional(),
 });
 
-type AddProductForm = z.infer<typeof AddProductSchema>;
+export type AddStockItemForm = z.infer<typeof AddProductSchema>;
 
 interface Props {
   handleCloseModal: () => void;
 }
 
-export function AddProducForm({ handleCloseModal }: Props) {
-  const form = useForm<AddProductForm>({
+export function AddStockItemForm({ handleCloseModal }: Props) {
+  const form = useForm<AddStockItemForm>({
     resolver: zodResolver(AddProductSchema),
+    defaultValues: {
+      productAmount: 1,
+    },
   });
 
-  const onSubmit = async (values: AddProductForm) => {
-    console.log(values);
+  const onSuccess = () => {
     handleCloseModal();
     toast("Produto adicionado com sucesso");
+  };
+  const { mutate } = useMutation({
+    mutationFn: createStockItem, // recebe (data: AddStockItemForm)
+    onSuccess: onSuccess,
+    onError: (error) => {
+      toast.error("Erro ao adicionar produto");
+      console.error("Erro ao criar item:", error);
+    },
+  });
+
+  const onSubmit = async (values: AddStockItemForm) => {
+    console.log(values);
+    mutate(values);
   };
 
   return (
@@ -80,7 +103,11 @@ export function AddProducForm({ handleCloseModal }: Props) {
             <FormItem>
               <FormLabel>Quantidade do Produto</FormLabel>
               <FormControl>
-                <Input type="number" {...field} />
+                <Input
+                  type="number"
+                  {...field}
+                  // className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -110,7 +137,7 @@ export function AddProducForm({ handleCloseModal }: Props) {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="productImage"
           render={({ field }) => (
@@ -132,9 +159,13 @@ export function AddProducForm({ handleCloseModal }: Props) {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
       </div>
-      <Button type="submit" onClick={form.handleSubmit(onSubmit)}>
+      <Button
+        className="text-background"
+        type="submit"
+        onClick={form.handleSubmit(onSubmit)}
+      >
         Salvar
       </Button>
     </Form>

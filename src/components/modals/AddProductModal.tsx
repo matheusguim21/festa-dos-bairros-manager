@@ -1,8 +1,14 @@
-import { DialogDescription, DialogTrigger } from "@radix-ui/react-dialog";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogDescription,
+} from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
-import { AddProducForm } from "../inputs/AddProductForm";
+import { AddStockItemForm } from "../inputs/AddStockItemForm";
 import { useState } from "react";
 
 export function AddProductModal() {
@@ -11,10 +17,10 @@ export function AddProductModal() {
     setIsOpen(false);
   };
   return (
-    <Dialog modal open={isOpen}>
-      <DialogTrigger onClick={() => setIsOpen(true)}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger onClick={() => setIsOpen(true)} asChild>
         <Button>
-          <Plus size={20} />
+          <Plus size={20} className="text-background" />
           <span className="uppercase text-muted">adicionar</span>
         </Button>
       </DialogTrigger>
@@ -25,7 +31,7 @@ export function AddProductModal() {
             Preencha as informações e clique em Salvar
           </DialogDescription>
         </DialogHeader>
-        <AddProducForm handleCloseModal={handleCloseModal} />
+        <AddStockItemForm handleCloseModal={handleCloseModal} />
       </DialogContent>
     </Dialog>
   );

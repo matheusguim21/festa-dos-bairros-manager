@@ -1,12 +1,13 @@
 {
   "extends": "@rocketseat/eslint-config/react",
 
-  "plugins": ["simple-import-sort"],
+  "plugins": ["simple-import-sort", "@tanstack/query"],
   "rules": {
     "simple-import-sort/imports": "error",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "off",
-    "camelcase":"off"
+    "camelcase": "off",
+    "@tanstack/query/no-void-query-fn": "error"
   },
   "parserOptions": {
     "sourceType": "module",
