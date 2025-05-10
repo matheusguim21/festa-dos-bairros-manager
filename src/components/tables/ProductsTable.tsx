@@ -1,3 +1,4 @@
+import { Product } from "@/types/Product";
 import {
   Table,
   TableBody,
@@ -8,31 +9,34 @@ import {
 } from "../ui/table";
 
 interface Props {
-  products: {
-    id: number;
-
-    name: string;
-    unit: string;
-    quantity: number;
-  }[];
+  data: Product[];
 }
 
-export default function StockTable({ products }: Props) {
+export default function ProductsTable({ data }: Props) {
+  const products = data.map((product) => {
+    return {
+      ...product,
+      price: new Intl.NumberFormat("pt-BR", {
+        currency: "BRL",
+        style: "currency",
+      }).format(product.price),
+    };
+  });
   return (
     <Table className="rounded-2xl bg-neutral-200">
       <TableHeader className="bg-neutral-300">
         <TableRow className="rounded-2xl">
           <TableHead className="rounded-s-2xl">Produto</TableHead>
+          <TableHead className="rounded-e-2xl">Preço</TableHead>
           <TableHead>Quantidade</TableHead>
-          <TableHead className="rounded-e-2xl">unidade medida</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {products.map((product) => (
           <TableRow key={product.id} accessKey={product.id.toString()}>
             <TableCell>{product.name}</TableCell>
+            <TableCell>{product.price}</TableCell>
             <TableCell>{product.quantity}</TableCell>
-            <TableCell>{product.unit}</TableCell>
           </TableRow>
         ))}
       </TableBody>

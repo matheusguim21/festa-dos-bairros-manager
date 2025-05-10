@@ -8,8 +8,8 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
-import { AddStockItemForm } from "../inputs/AddStockItemForm";
 import { useState } from "react";
+import { AddProductForm } from "../inputs/AddProductForm";
 
 export function AddProductModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,7 +31,7 @@ export function AddProductModal() {
             Preencha as informações e clique em Salvar
           </DialogDescription>
         </DialogHeader>
-        <AddStockItemForm handleCloseModal={handleCloseModal} />
+        <AddProductForm handleCloseModal={handleCloseModal} />
       </DialogContent>
     </Dialog>
   );

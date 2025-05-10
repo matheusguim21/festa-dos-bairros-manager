@@ -19,17 +19,19 @@ import {
 } from "../ui/select";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { createStockItem } from "@/api/stockService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createProductItem } from "@/api/productService";
+import { getAllStalls } from "@/api/shared/get-stalls";
+import { useMemo } from "react";
+import { PriceInput } from "./PriceInput";
 
 const AddProductSchema = z.object({
   productName: z.string({
     message: "Campo obrigatório",
   }),
   productAmount: z.coerce.number(),
-  measureUnity: z.string({
-    message: "Campo obrigatório",
-  }),
+  price: z.coerce.number(),
+  stallId: z.number(),
   // productImage: z
   //   .instanceof(File, {
   //     message: "Campo obrigatório",
@@ -48,26 +50,32 @@ const AddProductSchema = z.object({
   //   .optional(),
 });
 
-export type AddStockItemForm = z.infer<typeof AddProductSchema>;
+export type AddProductForm = z.infer<typeof AddProductSchema>;
 
 interface Props {
   handleCloseModal: () => void;
 }
 
-export function AddStockItemForm({ handleCloseModal }: Props) {
-  const form = useForm<AddStockItemForm>({
+export function AddProductForm({ handleCloseModal }: Props) {
+  const form = useForm<AddProductForm>({
     resolver: zodResolver(AddProductSchema),
     defaultValues: {
       productAmount: 1,
+      price: 0,
+      productName: "",
     },
   });
+  const queryClient = useQueryClient();
 
   const onSuccess = () => {
+    queryClient.invalidateQueries({
+      queryKey: ["products"],
+    });
     handleCloseModal();
     toast("Produto adicionado com sucesso");
   };
   const { mutate } = useMutation({
-    mutationFn: createStockItem, // recebe (data: AddStockItemForm)
+    mutationFn: createProductItem, // recebe (data: AddProductForm)
     onSuccess: onSuccess,
     onError: (error) => {
       toast.error("Erro ao adicionar produto");
@@ -75,9 +83,23 @@ export function AddStockItemForm({ handleCloseModal }: Props) {
     },
   });
 
-  const onSubmit = async (values: AddStockItemForm) => {
-    console.log(values);
-    mutate(values);
+  const { data } = useQuery({
+    queryKey: ["stalls"],
+    queryFn: getAllStalls,
+  });
+
+  const options = useMemo(() => {
+    const stalls = data || [];
+    return stalls.map((stall) => ({
+      value: stall.id.toString(),
+      label: stall.name,
+    }));
+  }, [data]);
+
+  const onSubmit = async (formData: AddProductForm) => {
+    console.log(formData);
+
+    mutate(formData);
   };
 
   return (
@@ -96,12 +118,15 @@ export function AddStockItemForm({ handleCloseModal }: Props) {
             </FormItem>
           )}
         />
+        <PriceInput form={form} />
+      </div>
+      <div className="flex flex-row gap-3">
         <FormField
           control={form.control}
           name="productAmount"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Quantidade do Produto</FormLabel>
+              <FormLabel>Quantidade</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -113,24 +138,27 @@ export function AddStockItemForm({ handleCloseModal }: Props) {
             </FormItem>
           )}
         />
-      </div>
-      <div className="flex flex-row gap-3">
         <FormField
           control={form.control}
-          name="measureUnity"
+          name="stallId"
           render={({ field }) => (
             <FormItem className="min-w-52">
-              <FormLabel>Unidade de medida</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <FormLabel>Barraca</FormLabel>
+              <Select
+                onValueChange={(val) => field.onChange(Number(val))}
+                value={String(field.value)}
+              >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Escolha uma opção" />
+                    <SelectValue placeholder="Selecione a Barraca" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="unidades">unidades</SelectItem>
-                  <SelectItem value="kg">quilos</SelectItem>
-                  <SelectItem value="l">litros</SelectItem>
+                  {options.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />

@@ -1,7 +1,8 @@
-import { getAllStockItems } from "@/api/stockService";
+import { getAllProducts } from "@/api/productService";
 import { AddProductModal } from "@/components/modals/AddProductModal";
 import { Pagination } from "@/components/pagination";
-import StockTable from "@/components/tables/StockTable";
+import ProductsTable from "@/components/tables/ProductsTable";
+import StockTable from "@/components/tables/ProductsTable";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -27,13 +28,13 @@ type SearchStockItemForm = z.infer<typeof SearchStockItemSchema>;
 export function Stock() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { control, handleSubmit, getValues, watch } =
-    useForm<SearchStockItemForm>({
-      resolver: zodResolver(SearchStockItemSchema),
-      defaultValues: {
-        limit: searchParams.get("limit") ?? "5",
-      },
-    });
+  const { control, handleSubmit, watch } = useForm<SearchStockItemForm>({
+    resolver: zodResolver(SearchStockItemSchema),
+    defaultValues: {
+      limit: searchParams.get("limit") ?? "5",
+      search: "",
+    },
+  });
   const pageIndex = z.coerce
     .number()
 
@@ -42,10 +43,10 @@ export function Stock() {
   const search = searchParams.get("search") || "";
   const limit = watch("limit");
 
-  const { data, isFetching } = useQuery({
-    queryKey: ["stock-items", pageIndex, limit, search],
+  const { data } = useQuery({
+    queryKey: ["products", pageIndex, limit, search],
     queryFn: () =>
-      getAllStockItems({
+      getAllProducts({
         limit: Number(limit),
         page: pageIndex,
         search,
@@ -148,11 +149,11 @@ export function Stock() {
         </div>
       </section>
       <section className="flex flex-col">
-        <StockTable products={data?.data || []} />
+        <ProductsTable data={data?.content || []} />
         {data && (
           <Pagination
             pageIndex={data.page}
-            totalCount={data.total}
+            totalCount={data.totalElements}
             totalPages={data.totalPages}
             onPageChange={handlePaginate}
           />
