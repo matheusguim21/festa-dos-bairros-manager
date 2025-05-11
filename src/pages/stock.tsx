@@ -1,4 +1,5 @@
 import { getAllProducts } from "@/api/productService";
+import { StockFilters } from "@/components/filters/StockFilters";
 import { AddProductModal } from "@/components/modals/AddProductModal";
 import { Pagination } from "@/components/pagination";
 import ProductsTable from "@/components/tables/ProductsTable";
@@ -11,12 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router";
 import { z } from "zod";
 
@@ -28,13 +29,14 @@ type SearchStockItemForm = z.infer<typeof SearchStockItemSchema>;
 export function Stock() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { control, handleSubmit, watch } = useForm<SearchStockItemForm>({
-    resolver: zodResolver(SearchStockItemSchema),
-    defaultValues: {
-      limit: searchParams.get("limit") ?? "5",
-      search: "",
-    },
-  });
+  const { control, handleSubmit, watch, getValues } =
+    useForm<SearchStockItemForm>({
+      resolver: zodResolver(SearchStockItemSchema),
+      defaultValues: {
+        limit: searchParams.get("limit") ?? "5",
+        search: "",
+      },
+    });
   const pageIndex = z.coerce
     .number()
 
@@ -42,6 +44,8 @@ export function Stock() {
 
   const search = searchParams.get("search") || "";
   const limit = watch("limit");
+
+  const isMobile = useIsMobile();
 
   const { data } = useQuery({
     queryKey: ["products", pageIndex, limit, search],
@@ -51,7 +55,8 @@ export function Stock() {
         page: pageIndex,
         search,
       }),
-    placeholderData: keepPreviousData,
+    enabled: true,
+    // placeholderData: keepPreviousData,
   });
 
   function handlePaginate(newPageIndex: number) {
@@ -80,72 +85,29 @@ export function Stock() {
   }, [limit]);
 
   useEffect(() => {
-    const currentPage = Number(searchParams.get("page")) || 1;
-    const totalPages = data?.totalPages ?? 1;
-
-    if (currentPage > totalPages) {
-      setSearchParams((state) => {
-        state.set("page", "1");
-        return state;
-      });
-    }
-  }, [data?.totalPages]);
+    setSearchParams((state) => {
+      state.set("search", getValues().search);
+      return state;
+    });
+  }, []);
 
   return (
-    <main className="flex flex-col gap-5 px-16">
+    <main className="flex flex-col gap-5 px-5 py-5 pb-10">
       <Helmet title="Estoque" />
       <section className="mx-auto flex flex-col items-center">
         <h1 className="text-3xl font-bold text-muted-foreground">Estoque</h1>
       </section>
 
       <section>
-        <div className="flex">
-          <div className="flex flex-1 flex-row justify-between border-0">
-            <div className="flex gap-5">
-              <Controller
-                control={control}
-                name="search"
-                render={({ field: { name, onChange, disabled, value } }) => (
-                  <div className="flex w-96 items-center gap-4 rounded-xl border bg-secondary px-3">
-                    <Input
-                      className="border-0 placeholder:text-gray-400"
-                      placeholder="nome  do produto"
-                      value={value}
-                      onChange={onChange}
-                      disabled={disabled}
-                      name={name}
-                    />
-                    <Search
-                      className="cursor-pointer text-gray-400"
-                      onClick={handleSubmit(handleSearch)}
-                    />
-                  </div>
-                )}
-              />
-              <Controller
-                control={control}
-                name="limit"
-                render={({ field }) => (
-                  <Select
-                    name={field.name}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger className="w-16">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="20">20</SelectItem>
-                      <SelectItem value="50">50</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
-            <AddProductModal />
+        <div className="flex flex-col gap-5">
+          <div className="flex flex-col justify-between md:flex-row">
+            <StockFilters
+              control={control}
+              handleSearch={handleSubmit(handleSearch)}
+            />
+            {!isMobile && <AddProductModal />}
           </div>
+          {isMobile && <AddProductModal />}
         </div>
       </section>
       <section className="flex flex-col">

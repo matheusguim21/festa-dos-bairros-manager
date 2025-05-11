@@ -1,15 +1,13 @@
 import { Header } from "@/components/app/header";
 import { Outlet } from "react-router";
-export function AppLayout(){
-  return(
-    <div>
-    
-      <Header/>
-      
+export function AppLayout() {
+  return (
+    <div className="bg-background">
+      <Header />
+
       <div>
-        <Outlet/>
+        <Outlet />
       </div>
     </div>
   );
-
 }

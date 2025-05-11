@@ -23,12 +23,16 @@ export default function ProductsTable({ data }: Props) {
     };
   });
   return (
-    <Table className="rounded-2xl bg-neutral-200">
-      <TableHeader className="bg-neutral-300">
+    <Table className="overflow-auto rounded-2xl border bg-muted">
+      <TableHeader className="bg-muted-foreground">
         <TableRow className="rounded-2xl">
-          <TableHead className="rounded-s-2xl">Produto</TableHead>
-          <TableHead className="rounded-e-2xl">Preço</TableHead>
-          <TableHead>Quantidade</TableHead>
+          <TableHead className="rounded-b-none rounded-s-2xl text-background">
+            Produto
+          </TableHead>
+          <TableHead className="text-background">Preço</TableHead>
+          <TableHead className="rounded-b-none rounded-e-2xl text-background">
+            Quantidade
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
