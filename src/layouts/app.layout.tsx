@@ -3,7 +3,7 @@ import { Outlet } from "react-router";
 export function AppLayout() {
   return (
     <div className="bg-background">
-      <Header />
+      <Header navBar={true} />
 
       <div>
         <Outlet />

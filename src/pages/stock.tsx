@@ -1,4 +1,4 @@
-import { getAllProducts } from "@/api/productService";
+import { productsService } from "@/api/productService";
 import { StockFilters } from "@/components/filters/StockFilters";
 import { AddProductModal } from "@/components/modals/AddProductModal";
 import { Pagination } from "@/components/pagination";
@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuth } from "@/contexts/Auth.context";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -28,7 +29,7 @@ const SearchStockItemSchema = z.object({
 type SearchStockItemForm = z.infer<typeof SearchStockItemSchema>;
 export function Stock() {
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const { user } = useAuth();
   const { control, handleSubmit, watch, getValues } =
     useForm<SearchStockItemForm>({
       resolver: zodResolver(SearchStockItemSchema),
@@ -50,7 +51,7 @@ export function Stock() {
   const { data } = useQuery({
     queryKey: ["products", pageIndex, limit, search],
     queryFn: () =>
-      getAllProducts({
+      productsService.getAllProductsFromStallById(user!.stall.id, {
         limit: Number(limit),
         page: pageIndex,
         search,

@@ -1,12 +1,15 @@
 // App.tsx
 import { BrowserRouter } from "react-router";
-import { AppRoutes } from "./routes";
+
 import { HelmetProvider, Helmet } from "react-helmet-async";
-import "./global.css";
-import { Toaster } from "./components/ui/sonner";
+import "./src/styles/global.css";
+import { Toaster } from "./src/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AppRoutes } from "./src/routes";
+import { useAuth } from "@/contexts/Auth.context";
 export function App() {
   const queryClient = new QueryClient();
+
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>

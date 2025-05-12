@@ -20,7 +20,7 @@ import {
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createProductItem } from "@/api/productService";
+import { productsService } from "@/api/productService";
 import { getAllStalls } from "@/api/shared/get-stalls";
 import { useMemo } from "react";
 import { PriceInput } from "./PriceInput";
@@ -75,7 +75,7 @@ export function AddProductForm({ handleCloseModal }: Props) {
     toast("Produto adicionado com sucesso");
   };
   const { mutate } = useMutation({
-    mutationFn: createProductItem, // recebe (data: AddProductForm)
+    mutationFn: productsService.createProductItem, // recebe (data: AddProductForm)
     onSuccess: onSuccess,
     onError: (error) => {
       toast.error("Erro ao adicionar produto");
