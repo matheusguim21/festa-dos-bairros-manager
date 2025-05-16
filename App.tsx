@@ -17,7 +17,7 @@ export function App() {
           <AppRoutes />
         </BrowserRouter>
       </QueryClientProvider>
-      <Toaster />
+      <Toaster richColors />
     </HelmetProvider>
   );
 }

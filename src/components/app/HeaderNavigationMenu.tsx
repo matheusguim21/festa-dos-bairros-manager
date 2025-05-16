@@ -4,7 +4,13 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@radix-ui/react-navigation-menu";
-import { BadgeDollarSign, Box, Computer, LogOut } from "lucide-react";
+import {
+  ChevronDown,
+  BadgeDollarSign,
+  Box,
+  Computer,
+  LogOut,
+} from "lucide-react";
 import { NavLink } from "./nav-link";
 import {
   DropdownMenu,
@@ -24,8 +30,8 @@ export function HeaderNavigationMenu() {
         {isMobile ? (
           <NavigationMenuItem>
             <DropdownMenu>
-              <DropdownMenuTrigger className="rounded-md border border-background bg-muted px-2">
-                {user!.name}
+              <DropdownMenuTrigger className="flex items-center rounded-md border border-background bg-muted px-2">
+                <span> {user!.name}</span> <ChevronDown size={20} />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem>
@@ -46,15 +52,18 @@ export function HeaderNavigationMenu() {
                     <span>Vendas</span>
                   </NavigationMenuLink>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <NavigationMenuLink
-                    href="/caixa"
-                    className="flex w-full gap-2"
-                  >
-                    <Computer size={20} />
-                    <span>Caixa</span>
-                  </NavigationMenuLink>
-                </DropdownMenuItem>
+                {user?.role === "ADMIN" ? (
+                  <DropdownMenuItem>
+                    <NavigationMenuLink
+                      href="/caixa"
+                      className="flex w-full gap-2"
+                    >
+                      <Computer size={20} />
+                      <span>Caixa</span>
+                    </NavigationMenuLink>
+                  </DropdownMenuItem>
+                ) : null}
+
                 <DropdownMenuItem onClick={() => signOut()}>
                   Sair <LogOut />
                 </DropdownMenuItem>

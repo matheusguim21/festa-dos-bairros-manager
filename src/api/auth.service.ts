@@ -17,7 +17,7 @@ export const AuthService = {
       return response.data;
     } catch (error: any) {
       console.error("erro no Auth Service: ", error);
-      throw new Error(error);
+      throw error.response.data;
     }
   },
 };

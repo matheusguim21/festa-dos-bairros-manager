@@ -46,8 +46,8 @@ export const productsService = {
 
   async getAllProductsFromStallById(
     stallId: number,
-    { limit = 5, page = 1, search }: getAllProductsRequest,
-  ) {
+    { limit, page, search }: getAllProductsRequest = {},
+  ): Promise<getAllProductsResponse> {
     try {
       const response = await api.get(`/products/stall/${stallId}/`, {
         params: {

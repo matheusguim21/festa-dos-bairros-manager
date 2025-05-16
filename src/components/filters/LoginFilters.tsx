@@ -15,6 +15,7 @@ import { Button } from "../ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { AuthService } from "@/api/auth.service";
 import { useAuth } from "@/contexts/Auth.context";
+import { toast } from "sonner";
 
 const LoginSchema = z.object({
   username: z.string({
@@ -45,6 +46,10 @@ export function LoginFilters() {
   };
   const { mutate, data } = useMutation({
     mutationFn: AuthService.login,
+    onError: (error) =>
+      toast.error(error.message, {
+        className: "mb-5",
+      }),
   });
 
   if (data) {
