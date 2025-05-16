@@ -20,42 +20,50 @@ interface AuthState {
   signOut: () => void;
 }
 
-export const useAuth = create<AuthState>((set) => ({
-  user: null,
-  accessToken: null,
-  refreshToken: null,
-  isReady: false,
+export const useAuth = create<AuthState>((set) => {
+  // Recuperar dados salvos no localStorage
+  const accessToken = localStorage.getItem("access_token");
+  const refreshToken = localStorage.getItem("refresh_token");
+  const userJSON = localStorage.getItem("user");
+  const user = userJSON ? (JSON.parse(userJSON) as User) : null;
 
-  setInitialState: (payload) =>
-    set((state) => ({
-      ...state,
-      ...payload,
-      isReady: true,
-    })),
+  return {
+    user,
+    accessToken,
+    refreshToken,
+    isReady: true,
 
-  signIn: async ({ access_token, refresh_token }) => {
-    localStorage.setItem("access_token", access_token);
-    localStorage.setItem("refresh_token", refresh_token);
+    setInitialState: (payload) =>
+      set((state) => ({
+        ...state,
+        ...payload,
+        isReady: true,
+      })),
 
-    const { user_id } = jwtDecode<TokenPayload>(access_token);
-    const user = await userService.getUserById(user_id);
+    signIn: async ({ access_token, refresh_token }) => {
+      localStorage.setItem("access_token", access_token);
+      localStorage.setItem("refresh_token", refresh_token);
 
-    localStorage.setItem("user", JSON.stringify(user));
+      const { user_id } = jwtDecode<TokenPayload>(access_token);
+      const user = await userService.getUserById(user_id);
 
-    set({
-      user,
-      accessToken: access_token,
-      refreshToken: refresh_token,
-    });
-  },
+      localStorage.setItem("user", JSON.stringify(user));
 
-  signOut: () => {
-    localStorage.clear();
-    set({
-      user: null,
-      accessToken: null,
-      refreshToken: null,
-      isReady: true,
-    });
-  },
-}));
+      set({
+        user,
+        accessToken: access_token,
+        refreshToken: refresh_token,
+      });
+    },
+
+    signOut: () => {
+      localStorage.clear();
+      set({
+        user: null,
+        accessToken: null,
+        refreshToken: null,
+        isReady: true,
+      });
+    },
+  };
+});

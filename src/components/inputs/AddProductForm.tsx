@@ -30,7 +30,7 @@ const AddProductSchema = z.object({
     message: "Campo obrigatório",
   }),
   productAmount: z.coerce.number(),
-  price: z.coerce.number(),
+  price: z.coerce.number().min(1, "O valor deve ser maior que 0"),
   stallId: z.number(),
   // productImage: z
   //   .instanceof(File, {
@@ -112,7 +112,7 @@ export function AddProductForm({ handleCloseModal }: Props) {
             <FormItem>
               <FormLabel>Nome do Produto</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input className="flex-1" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -121,23 +121,6 @@ export function AddProductForm({ handleCloseModal }: Props) {
         <PriceInput form={form} />
       </div>
       <div className="flex flex-row gap-3">
-        <FormField
-          control={form.control}
-          name="productAmount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Quantidade</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  // className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="stallId"
@@ -161,6 +144,24 @@ export function AddProductForm({ handleCloseModal }: Props) {
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="productAmount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Quantidade</FormLabel>
+              <FormControl>
+                <Input
+                  className="w-24"
+                  type="number"
+                  {...field}
+                  // className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

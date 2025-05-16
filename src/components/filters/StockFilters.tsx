@@ -1,4 +1,3 @@
-// components/StockFilters.tsx
 import { Controller } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import {

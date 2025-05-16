@@ -6,7 +6,6 @@ import "./src/styles/global.css";
 import { Toaster } from "./src/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppRoutes } from "./src/routes";
-import { useAuth } from "@/contexts/Auth.context";
 export function App() {
   const queryClient = new QueryClient();
 

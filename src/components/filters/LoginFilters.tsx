@@ -12,9 +12,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { PasswordInput } from "../inputs/PasswordInput";
 import { Button } from "../ui/button";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { AuthService } from "@/api/auth.service";
-import { useEffect } from "react";
 import { useAuth } from "@/contexts/Auth.context";
 
 const LoginSchema = z.object({
@@ -62,7 +61,12 @@ export function LoginFilters() {
             <FormItem>
               <FormLabel>Nome de usuário</FormLabel>
               <FormControl>
-                <Input className="border-2" placeholder="" {...field} />
+                <Input
+                  autoCapitalize="none"
+                  className="border-2"
+                  placeholder=""
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

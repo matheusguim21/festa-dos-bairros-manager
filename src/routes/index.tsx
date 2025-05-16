@@ -1,5 +1,4 @@
 import { AppLayout } from "@/layouts/app.layout";
-import { Dashboard } from "@/pages/dashboard";
 import { Stock } from "@/pages/stock";
 import Vendas from "@/pages/vendas/vendas";
 import { Routes, Route } from "react-router";
@@ -15,8 +14,7 @@ export function AppRoutes() {
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<AppLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="estoque" element={<Stock />} />
+          <Route index path="estoque" element={<Stock />} />
           <Route path="vendas" element={<Vendas />} />
         </Route>
       </Route>

@@ -22,6 +22,7 @@ export function PriceInput({ form }: PriceInputProps) {
           <FormLabel>Preço</FormLabel>
           <FormControl>
             <Input
+              className="w-24"
               value={
                 field.value !== undefined && field.value !== null
                   ? (field.value / 1).toLocaleString("pt-BR", {

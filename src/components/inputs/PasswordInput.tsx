@@ -9,7 +9,7 @@ import {
 import { Input } from "../ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { colors } from "@/styles/colors";
-import { InputHTMLAttributes, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 type PasswordInputProps<TFieldValues extends FieldValues> = {
   form: UseFormReturn<TFieldValues>;

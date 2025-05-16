@@ -23,10 +23,10 @@ export default function ProductsTable({ data }: Props) {
     };
   });
   return (
-    <Table className="overflow-auto rounded-2xl border bg-muted">
+    <Table className="overflow-auto rounded-2xl bg-muted">
       <TableHeader className="bg-muted-foreground">
-        <TableRow className="rounded-2xl">
-          <TableHead className="rounded-b-none rounded-s-2xl text-background">
+        <TableRow>
+          <TableHead className="rounded-l-xl text-background">
             Produto
           </TableHead>
           <TableHead className="text-background">Preço</TableHead>

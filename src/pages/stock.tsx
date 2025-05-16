@@ -3,15 +3,7 @@ import { StockFilters } from "@/components/filters/StockFilters";
 import { AddProductModal } from "@/components/modals/AddProductModal";
 import { Pagination } from "@/components/pagination";
 import ProductsTable from "@/components/tables/ProductsTable";
-import StockTable from "@/components/tables/ProductsTable";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { useAuth } from "@/contexts/Auth.context";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,7 +26,7 @@ export function Stock() {
     useForm<SearchStockItemForm>({
       resolver: zodResolver(SearchStockItemSchema),
       defaultValues: {
-        limit: searchParams.get("limit") ?? "5",
+        limit: searchParams.get("limit") ?? "10",
         search: "",
       },
     });
@@ -57,7 +49,7 @@ export function Stock() {
         search,
       }),
     enabled: true,
-    // placeholderData: keepPreviousData,
+    placeholderData: keepPreviousData,
   });
 
   function handlePaginate(newPageIndex: number) {

@@ -1,4 +1,3 @@
-import { TokenPayload } from "@/types/AccessTokenPayload";
 import { api } from "./api";
 
 export type AuthFormData = {
