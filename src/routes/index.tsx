@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicRoute } from "./PublicRoute";
 import { Login } from "@/pages/auth/login";
+import DashBoard from "@/pages/dashboard";
 
 export function AppRoutes() {
   return (
@@ -14,7 +15,8 @@ export function AppRoutes() {
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<AppLayout />}>
-          <Route index path="estoque" element={<Stock />} />
+          <Route index element={<DashBoard />} />
+          <Route path="estoque" element={<Stock />} />
           <Route path="vendas" element={<Vendas />} />
         </Route>
       </Route>

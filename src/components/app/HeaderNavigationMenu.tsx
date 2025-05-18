@@ -10,6 +10,8 @@ import {
   Box,
   Computer,
   LogOut,
+  Store,
+  ScrollText,
 } from "lucide-react";
 import { NavLink } from "./nav-link";
 import {
@@ -35,6 +37,12 @@ export function HeaderNavigationMenu() {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem>
+                  <NavigationMenuLink href="/" className="flex w-full gap-2">
+                    <Store size={20} />
+                    <span>Inicio</span>
+                  </NavigationMenuLink>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
                   <NavigationMenuLink
                     href="/estoque"
                     className="flex w-full gap-2"
@@ -48,7 +56,7 @@ export function HeaderNavigationMenu() {
                     href="/vendas"
                     className="flex w-full gap-2"
                   >
-                    <BadgeDollarSign size={20} />
+                    <ScrollText size={20} />
                     <span>Vendas</span>
                   </NavigationMenuLink>
                 </DropdownMenuItem>
