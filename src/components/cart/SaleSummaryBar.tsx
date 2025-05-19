@@ -224,7 +224,7 @@ export function SaleSummaryBar() {
               className="border-red-500 bg-background text-red-500"
               onClick={clear}
             >
-              Cancelar venda
+              Limpar
             </Button>
             <Button
               onClick={() => setOpen(true)}

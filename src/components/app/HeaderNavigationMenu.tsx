@@ -80,6 +80,14 @@ export function HeaderNavigationMenu() {
         ) : (
           <>
             <NavigationMenuItem>
+              <NavigationMenuLink asChild className="flex w-full gap-2">
+                <NavLink to={"/"}>
+                  <Store size={20} />
+                  <span>Inicio</span>
+                </NavLink>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <NavLink to={"/"}>
                   <Store size={20} />
