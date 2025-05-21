@@ -9,7 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "@dr.pogodin/react-helmet";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router";
 import { z } from "zod";
@@ -86,7 +86,9 @@ export function Stock() {
 
   return (
     <main className="flex flex-col gap-5 px-5 py-5 pb-10">
-      <Helmet title="Estoque" />
+      <Helmet>
+        <title>Estoque</title>
+      </Helmet>
       <section className="mx-auto flex flex-col items-center">
         <h1 className="text-3xl font-bold text-muted-foreground">Estoque</h1>
       </section>

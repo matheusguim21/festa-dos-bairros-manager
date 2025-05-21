@@ -6,7 +6,6 @@ import {
 } from "@radix-ui/react-navigation-menu";
 import {
   ChevronDown,
-  BadgeDollarSign,
   Box,
   Computer,
   LogOut,
@@ -82,6 +81,14 @@ export function HeaderNavigationMenu() {
           <>
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
+                <NavLink to={"/"}>
+                  <Store size={20} />
+                  <span>Ínicio</span>
+                </NavLink>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
                 <NavLink to={"/estoque"}>
                   <Box />
                   <span>Estoque</span>
@@ -91,7 +98,7 @@ export function HeaderNavigationMenu() {
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <NavLink to={"/vendas"}>
-                  <Box />
+                  <ScrollText size={20} />
                   <span>Vendas</span>
                 </NavLink>
               </NavigationMenuLink>

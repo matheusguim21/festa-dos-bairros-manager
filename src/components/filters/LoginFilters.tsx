@@ -16,6 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { AuthService } from "@/api/auth.service";
 import { useAuth } from "@/contexts/Auth.context";
 import { toast } from "sonner";
+import { AxiosError } from "axios";
 
 const LoginSchema = z.object({
   username: z.string({
@@ -46,10 +47,23 @@ export function LoginFilters() {
   };
   const { mutate, data } = useMutation({
     mutationFn: AuthService.login,
-    onError: (error) =>
-      toast.error(error.message, {
-        className: "mb-5",
-      }),
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        console.error("Erro:", error);
+
+        if (error.code === "ERR_NETWORK") {
+          toast.error("Erro de conexão com a API", { className: "mb-5" });
+          return; // ← IMPORTANTE: garantir que o código não continue
+        }
+
+        toast.error(error.response?.data.message ?? "Erro desconhecido", {
+          className: "mb-5",
+        });
+        return;
+      }
+
+      toast.error(error.message ?? "Erro desconhecido", { className: "mb-5" });
+    },
   });
 
   if (data) {

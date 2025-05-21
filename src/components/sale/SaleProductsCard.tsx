@@ -1,8 +1,8 @@
 import { Product } from "@/types/Product";
 import { Minus, Plus } from "lucide-react";
-import { useState } from "react";
-import { Separator } from "../ui/separator";
+
 import { useSaleStore } from "@/store/SaleStore";
+import { toast } from "sonner";
 
 interface Props {
   product: Product;
@@ -27,16 +27,20 @@ export function SaleProductsCard({ product }: Props) {
 
       <div className="flex flex-col items-center justify-evenly gap-2">
         <Plus
-          className="h-6 w-6 rounded-full border-2 border-green-600 text-green-600"
+          className="h-6 w-6 cursor-pointer rounded-full border-2 border-green-600 text-green-600"
           onClick={() => {
-            if (quantity < product.quantity) addItem(product);
+            if (quantity < product.quantity) {
+              addItem(product);
+            } else {
+              toast.warning("Quantidade máxima de produto em estoque atingida");
+            }
           }}
         />
         <span className="w-7 rounded border-2 border-primary text-center">
           {quantity}
         </span>
         <Minus
-          className="h-6 w-6 rounded-full border-2 border-red-500 text-red-500"
+          className="h-6 w-6 cursor-pointer rounded-full border-2 border-red-500 text-red-500"
           onClick={() => {
             if (quantity > 0) removeItem(product.id);
           }}

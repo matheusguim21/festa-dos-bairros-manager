@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { Product } from "@/types/Product";
 
-type SaleItem = {
+type OrderItem = {
   product: Product;
   quantity: number;
 };
 type SaleStore = {
-  items: SaleItem[];
+  items: OrderItem[];
   addItem: (product: Product) => void;
   removeItem: (productId: number) => void;
   setItemQuantity: (productId: number, quantity: number) => void;
