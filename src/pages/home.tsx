@@ -1,9 +1,9 @@
 import { productsService } from "@/api/productService";
-import { SaleProductsCard } from "@/components/sale/SaleProductsCard";
+import { OrderProductsCard } from "@/components/order/OrderProductsCard";
 import { useAuth } from "@/contexts/Auth.context";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { SaleSummaryBar } from "@/components/cart/SaleSummaryBar";
 import { Helmet } from "@dr.pogodin/react-helmet";
+import { Cart } from "@/components/order/cart/Cart";
 
 export default function Home() {
   const { user } = useAuth();
@@ -21,10 +21,10 @@ export default function Home() {
       {/* padding bottom para não cobrir os cards */}
       <div className="flex flex-col gap-5">
         {data?.content.map((product) => (
-          <SaleProductsCard key={product.id} product={product} />
+          <OrderProductsCard key={product.id} product={product} />
         ))}
       </div>
-      <SaleSummaryBar />
+      <Cart />
     </div>
   );
 }

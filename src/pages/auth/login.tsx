@@ -7,7 +7,11 @@ export function Login() {
 
   return (
     <main
-      className={isMobile ? "flex flex-col items-center" : "grid grid-cols-2"}
+      className={
+        isMobile
+          ? "flex min-h-screen flex-col items-center bg-background"
+          : "grid grid-cols-2"
+      }
     >
       <section
         className={

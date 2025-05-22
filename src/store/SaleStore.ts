@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Product } from "@/types/Product";
 
-type OrderItem = {
+export type OrderItem = {
   product: Product;
   quantity: number;
 };

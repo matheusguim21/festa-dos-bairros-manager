@@ -87,14 +87,7 @@ export function HeaderNavigationMenu() {
                 </NavLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <NavLink to={"/"}>
-                  <Store size={20} />
-                  <span>Ínicio</span>
-                </NavLink>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <NavLink to={"/estoque"}>

@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
 @layer base {
   :root {
     --background: 32 66% 100%;
@@ -62,8 +59,6 @@
   }
 }
 
-  
-
 @layer base {
   * {
     @apply border-border;
@@ -72,10 +67,6 @@
     @apply bg-background text-foreground;
   }
 }
-
-
-
-
 
 @layer base {
   * {

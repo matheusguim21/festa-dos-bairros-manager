@@ -1,30 +1,28 @@
-import { productsService } from "@/api/productService";
-import { SaleProductsCard } from "@/components/sale/SaleProductsCard";
 import { useAuth } from "@/contexts/Auth.context";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { SaleSummaryBar } from "@/components/cart/SaleSummaryBar";
 import { Helmet } from "@dr.pogodin/react-helmet";
+import { SaleCard } from "@/components/sale/SaleCard";
+import { ordersService } from "@/api/orders.service";
 
 export default function Vendas() {
   const { user } = useAuth();
 
   const { data } = useQuery({
-    queryKey: ["products"],
-    queryFn: () => productsService.getAllProductsFromStallById(user!.stall.id),
+    queryKey: ["sales"],
+    queryFn: () => ordersService.getAllOrdersByStall(user!.stall.id),
     enabled: true,
     placeholderData: keepPreviousData,
   });
 
   return (
-    <div className="px-5 py-5 pb-24">
-      <Helmet title="Vendas" />
-      {/* padding bottom para não cobrir os cards */}
-      <div className="flex flex-col gap-5">
-        {data?.content.map((product) => (
-          <SaleProductsCard key={product.id} product={product} />
-        ))}
+    <main className="min-h-screen">
+      <div className="px-3 py-5 pb-24">
+        <Helmet title="Vendas" />
+        {/* padding bottom para não cobrir os cards */}
+        <div className="flex flex-col gap-5">
+          {data?.content.map((sale) => <SaleCard key={sale.id} sale={sale} />)}
+        </div>
       </div>
-      <SaleSummaryBar />
-    </div>
+    </main>
   );
 }

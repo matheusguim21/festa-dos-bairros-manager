@@ -8,7 +8,7 @@ interface Props {
   product: Product;
 }
 
-export function SaleProductsCard({ product }: Props) {
+export function OrderProductsCard({ product }: Props) {
   const { addItem, items, removeItem } = useSaleStore();
 
   const current = items.find((item) => item.product.id === product.id);
