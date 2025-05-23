@@ -109,7 +109,7 @@ export function Stock() {
       <section className="flex flex-col gap-2">
         {isMobile ? (
           data?.content.map((product) => (
-            <StockProductsCard product={product} />
+            <StockProductsCard product={product} key={product.id} />
           ))
         ) : (
           <ProductsTable data={data?.content || []} />
@@ -117,8 +117,8 @@ export function Stock() {
         {data && (
           <Pagination
             pageIndex={data.page}
+            pageCount={data.totalPages}
             totalCount={data.totalElements}
-            totalPages={data.totalPages}
             onPageChange={handlePaginate}
           />
         )}

@@ -1,6 +1,11 @@
 // src/components/SaleCard.tsx
 
-import { convertStatus, Sale, SaleStatusApi } from "@/types/Sales";
+import {
+  convertStatus,
+  Sale,
+  SaleStatusApi,
+  statusColorMap,
+} from "@/types/Sales";
 import { Badge } from "../ui/badge";
 import {
   Dialog,
@@ -29,7 +34,6 @@ import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
 } from "../ui/alert-dialog";
@@ -38,18 +42,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useAuth } from "@/contexts/Auth.context";
 
 interface Props {
   sale: Sale;
 }
 
 // 1) Mapa de status → classes
-const statusColorMap: Record<Sale["status"], string> = {
-  PENDING: "bg-yellow-200 text-yellow-800",
-  PREPARING: "bg-blue-200   text-blue-800",
-  DELIVERED: "bg-green-200  text-green-800",
-  CANCELED: "bg-red-200    text-red-800",
-};
 
 export const orderStatusSchema = z.object({
   status: z.enum(
@@ -60,6 +59,8 @@ export const orderStatusSchema = z.object({
 export type OrderStatusForm = z.infer<typeof orderStatusSchema>;
 
 export function SaleCard({ sale }: Props) {
+  const { user } = useAuth();
+
   const [open, setOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -137,7 +138,7 @@ export function SaleCard({ sale }: Props) {
           </div>
           <div className="flex flex-1 flex-col justify-end">
             <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger className="flex justify-start">
+              <DialogTrigger asChild className="flex justify-start">
                 <Badge className={cn(colorClasses, "w-fit")}>
                   {convertStatus(sale.status)}
                 </Badge>
@@ -149,44 +150,7 @@ export function SaleCard({ sale }: Props) {
                 </DialogDescription>
                 <UpdateOrderStatusForm form={form} onSubmit={onSubmit} />
 
-                {watchedStatus === "CANCELED" ? (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        disabled={!isStatusChanged}
-                        className="text-background"
-                        onClick={
-                          watchedStatus !== "CANCELED"
-                            ? form.handleSubmit(onSubmit)
-                            : undefined
-                        }
-                      >
-                        Salvar
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Você tem certeza que quer cancelar o pedido?
-                        </AlertDialogTitle>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Não</AlertDialogCancel>
-                        <AlertDialogAction
-                          asChild
-                          onClick={form.handleSubmit(onSubmit)}
-                        >
-                          <Button
-                            className="bg-destructive text-background"
-                            variant="destructive"
-                          >
-                            Sim
-                          </Button>
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                ) : (
+                {user!.role === "ADMIN" ? (
                   <Button
                     disabled={!isStatusChanged}
                     className="text-background"
@@ -194,7 +158,7 @@ export function SaleCard({ sale }: Props) {
                   >
                     Salvar
                   </Button>
-                )}
+                ) : null}
               </DialogContent>
             </Dialog>
           </div>

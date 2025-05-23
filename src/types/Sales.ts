@@ -28,6 +28,12 @@ export interface Sale {
   date: string;
   status: SaleStatusApi;
 }
+export const statusColorMap: Record<Sale["status"], string> = {
+  PENDING: "bg-yellow-200 text-yellow-800",
+  PREPARING: "bg-blue-200   text-blue-800",
+  DELIVERED: "bg-green-200  text-green-800",
+  CANCELED: "bg-red-200    text-red-800",
+};
 
 // Mapa de tradução de API → UI
 export const saleStatusTranslation: Record<SaleStatusApi, SaleStatus> = {

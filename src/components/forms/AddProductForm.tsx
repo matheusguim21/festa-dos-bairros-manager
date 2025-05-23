@@ -26,12 +26,17 @@ import { useMemo } from "react";
 import { PriceInput } from "../inputs/PriceInput";
 
 const AddProductSchema = z.object({
-  productName: z.string({
-    message: "Campo obrigatório",
-  }),
-  productAmount: z.coerce.number(),
+  productName: z
+    .string({
+      message: "Campo obrigatório",
+    })
+    .min(2, "Campo obrigatório"),
+  productAmount: z.coerce.number().min(1, "O valor deve ser maior que 0"),
   price: z.coerce.number().min(1, "O valor deve ser maior que 0"),
-  stallId: z.number(),
+  stallId: z.number({
+    message: "A barraca é obrigatória",
+  }),
+
   // productImage: z
   //   .instanceof(File, {
   //     message: "Campo obrigatório",
