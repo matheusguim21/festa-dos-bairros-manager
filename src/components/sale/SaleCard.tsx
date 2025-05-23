@@ -6,7 +6,6 @@ import {
   SaleStatusApi,
   statusColorMap,
 } from "@/types/Sales";
-import { Badge } from "../ui/badge";
 import {
   Dialog,
   DialogContent,
