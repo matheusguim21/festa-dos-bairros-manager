@@ -23,7 +23,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { productsService } from "@/api/productService";
 import { getAllStalls } from "@/api/shared/get-stalls";
 import { useMemo } from "react";
-import { PriceInput } from "./PriceInput";
+import { PriceInput } from "../inputs/PriceInput";
 
 const AddProductSchema = z.object({
   productName: z.string({
@@ -118,7 +118,19 @@ export function AddProductForm({ handleCloseModal }: Props) {
             </FormItem>
           )}
         />
-        <PriceInput form={form} />
+        <FormField
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Preço do Item</FormLabel>
+              <FormControl>
+                <PriceInput field={field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
       <div className="flex flex-row gap-3">
         <FormField

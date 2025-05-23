@@ -13,6 +13,7 @@ import { Helmet } from "@dr.pogodin/react-helmet";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router";
 import { z } from "zod";
+import { StockProductsCard } from "@/components/cards/StockProductsCard";
 
 const SearchStockItemSchema = z.object({
   search: z.string(),
@@ -105,8 +106,14 @@ export function Stock() {
           {isMobile && <AddProductModal />}
         </div>
       </section>
-      <section className="flex flex-col">
-        <ProductsTable data={data?.content || []} />
+      <section className="flex flex-col gap-2">
+        {isMobile ? (
+          data?.content.map((product) => (
+            <StockProductsCard product={product} />
+          ))
+        ) : (
+          <ProductsTable data={data?.content || []} />
+        )}
         {data && (
           <Pagination
             pageIndex={data.page}

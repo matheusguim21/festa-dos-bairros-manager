@@ -1,5 +1,5 @@
 import { productsService } from "@/api/productService";
-import { OrderProductsCard } from "@/components/order/OrderProductsCard";
+import { OrderProductsCard } from "@/components/cards/OrderProductsCard";
 import { useAuth } from "@/contexts/Auth.context";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Helmet } from "@dr.pogodin/react-helmet";

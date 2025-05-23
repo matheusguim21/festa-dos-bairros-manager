@@ -9,7 +9,7 @@ import {
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { AddProductForm } from "../inputs/AddProductForm";
+import { AddProductForm } from "../forms/AddProductForm";
 
 export function AddProductModal() {
   const [isOpen, setIsOpen] = useState(false);
