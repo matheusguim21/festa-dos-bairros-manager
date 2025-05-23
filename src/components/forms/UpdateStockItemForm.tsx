@@ -1,5 +1,12 @@
 import { UseFormReturn } from "react-hook-form";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import {
   Operation,
   OPERATION_LABELS,
@@ -16,13 +23,31 @@ import { Input } from "../ui/input";
 import { PriceInput } from "../inputs/PriceInput";
 import { cn } from "@/lib/utils";
 import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { getAllStalls } from "@/api/shared/get-stalls";
 
 interface Props {
   form: UseFormReturn<UpdateStockItemFormData>;
 }
 
 export function UpdateStockItemForm({ form }: Props) {
+  const operation = form.watch("operation");
+
   const operationOptions = Object.values(Operation);
+
+  const { data } = useQuery({
+    queryKey: ["stalls"],
+    queryFn: getAllStalls,
+  });
+
+  const options = useMemo(() => {
+    const stalls = data || [];
+    return stalls.map((stall) => ({
+      value: stall.id.toString(),
+      label: stall.name,
+    }));
+  }, [data]);
 
   return (
     <Form {...form}>
@@ -33,30 +58,35 @@ export function UpdateStockItemForm({ form }: Props) {
             name="operation"
             render={({ field }) => {
               const isIn = field.value === Operation.IN;
+              const isOut = field.value === Operation.OUT;
 
               return (
-                <FormItem key={field.value}>
+                <FormItem>
                   <FormLabel>Tipo de Operação</FormLabel>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
                         className={cn(
-                          "inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium",
+                          "inline-flex items-center gap-2 px-3 py-1 text-sm font-medium",
                           isIn
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800",
+                            ? "border-green-950 bg-green-100 text-green-800"
+                            : isOut
+                              ? "border-red-900 bg-red-100 text-red-800"
+                              : "border border-primary",
                         )}
                       >
                         {isIn ? (
-                          <div className="flex">
+                          <div className="flex items-center gap-2">
                             <ArrowUpCircle className="h-4 w-4" />{" "}
                             <SelectValue />
                           </div>
-                        ) : (
-                          <div className="flex">
+                        ) : isOut ? (
+                          <div className="flex items-center gap-2">
                             <ArrowDownCircle className="h-4 w-4" />{" "}
                             <SelectValue />
                           </div>
+                        ) : (
+                          <SelectValue placeholder="Saída ou entrada" />
                         )}
                         <SelectValue />
                       </SelectTrigger>
@@ -76,9 +106,40 @@ export function UpdateStockItemForm({ form }: Props) {
           />
           <FormField
             control={form.control}
+            name="operationQuantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantidade</FormLabel>
+                <FormControl>
+                  <Input
+                    className="disabled:border-0"
+                    type="number"
+                    disabled={operation === Operation.NOONE}
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <FormField
+            control={form.control}
+            name="productPrice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Preço</FormLabel>
+                <FormControl>
+                  <PriceInput field={field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="productName"
             render={({ field }) => (
-              <FormItem key={field.value}>
+              <FormItem>
                 <FormLabel>Nome do item</FormLabel>
                 <FormControl>
                   <Input {...field} />
@@ -90,25 +151,40 @@ export function UpdateStockItemForm({ form }: Props) {
         <div className="grid grid-cols-2 gap-2">
           <FormField
             control={form.control}
-            name="productPrice"
+            name="criticalStock"
             render={({ field }) => (
-              <FormItem key={field.value}>
-                <FormLabel>Preço</FormLabel>
+              <FormItem>
+                <FormLabel>Valor crítico do estoque</FormLabel>
                 <FormControl>
-                  <PriceInput field={field} />
+                  <Input type="number" {...field} />
                 </FormControl>
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="operationQuantity"
+            name="stallId"
             render={({ field }) => (
-              <FormItem key={field.value}>
-                <FormLabel>Quantidade</FormLabel>
+              <FormItem>
+                <FormLabel>Barraca</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} />
+                  <Select
+                    onValueChange={(val) => field.onChange(Number(val))}
+                    value={String(field.value)}
+                  >
+                    <SelectTrigger className="border border-primary">
+                      <SelectValue placeholder="Selecione a Barraca" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {options.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />

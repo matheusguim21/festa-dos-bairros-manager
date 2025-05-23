@@ -1,6 +1,7 @@
 import { AddProductForm } from "@/components/forms/AddProductForm";
 import { api } from "./api";
 import { Product } from "@/types/Product";
+import { Operation } from "@/types/schemas/update-stock-item-schema";
 
 interface getAllProductsResponse {
   content: Product[] | [];
@@ -8,6 +9,15 @@ interface getAllProductsResponse {
   page: number;
   limit: number;
   totalPages: number;
+}
+interface UpdateProductsRequest {
+  productId: number;
+  name?: string;
+  price: number;
+  quantity: number;
+  criticalStock: number;
+  stallId: number;
+  operation: Operation;
 }
 interface getAllProductsRequest {
   search?: string;
@@ -59,6 +69,18 @@ export const productsService = {
       console.log("Response getAllProductsFromStallById:  ", response.data);
       return response.data;
     } catch (error: any) {
+      throw error;
+    }
+  },
+  async updateProduct(formData: UpdateProductsRequest) {
+    try {
+      const response = await api.put<UpdateProductsRequest>(
+        "/products",
+        formData,
+      );
+      console.log("response UpdateProduct: ", response.data);
+      return response.data;
+    } catch (error) {
       throw error;
     }
   },

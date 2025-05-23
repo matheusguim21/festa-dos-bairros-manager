@@ -9,28 +9,95 @@ import {
 } from "../ui/dialog";
 import { UpdateStockItemForm } from "../forms/UpdateStockItemForm";
 import { useForm } from "react-hook-form";
-import { UpdateStockItemFormData } from "@/types/schemas/update-stock-item-schema";
+import {
+  Operation,
+  UpdateStockItemFormData,
+  updateStockItemSchema,
+} from "@/types/schemas/update-stock-item-schema";
 import { Product } from "@/types/Product";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { productsService } from "@/api/productService";
+import { useState } from "react";
+import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface Props {
   product: Product;
 }
 
 export function UpdateStockModal({ product }: Props) {
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+
   const form = useForm<UpdateStockItemFormData>({
     defaultValues: {
-      operation: "IN",
+      operation: Operation.NOONE,
       productId: product.id,
       productName: product.name,
       productPrice: product.price,
       operationQuantity: 0,
+      criticalStock: product.criticalStock,
+      stallId: product.stallId,
+    },
+    resolver: zodResolver(updateStockItemSchema),
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: productsService.updateProduct,
+    onSuccess: () => {
+      setOpen(false);
+      queryClient.invalidateQueries();
+      toast.success("Produto atualizado com sucesso");
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error(error.message);
     },
   });
 
+  const onSubmit = async (formData: UpdateStockItemFormData) => {
+    const {
+      criticalStock,
+      operation,
+      operationQuantity,
+      productId,
+      productPrice,
+      productName,
+      stallId,
+    } = formData;
+    console.log("Formulário: ", formData);
+    mutate({
+      name: productName,
+      price: productPrice,
+      productId: productId,
+      quantity: operationQuantity,
+      stallId: stallId,
+      criticalStock,
+      operation,
+    });
+  };
+
+  const operation = form.watch("operation");
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Pencil className="h-6 w-6 cursor-pointer self-center rounded-md border-2 border-foreground" />
+        <Pencil
+          className="h-6 w-6 cursor-pointer self-center rounded-md border-2 border-foreground"
+          onClick={() =>
+            form.reset({
+              operation: Operation.NOONE,
+              productId: product.id,
+              productName: product.name,
+              productPrice: product.price,
+              operationQuantity: 0,
+              criticalStock: product.criticalStock,
+              stallId: product.stallId,
+            })
+          }
+        />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -41,6 +108,21 @@ export function UpdateStockModal({ product }: Props) {
           </DialogDescription>
         </DialogHeader>
         <UpdateStockItemForm form={form} />
+
+        <Button
+          type="submit"
+          className={cn(
+            "text-background",
+            operation === "IN"
+              ? "bg-green-600"
+              : operation === "OUT"
+                ? "bg-red-500"
+                : null,
+          )}
+          onClick={form.handleSubmit(onSubmit)}
+        >
+          Salvar
+        </Button>
       </DialogContent>
     </Dialog>
   );

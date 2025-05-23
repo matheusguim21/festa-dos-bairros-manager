@@ -127,11 +127,22 @@ export function SaleCard({ sale }: Props) {
           </div>
           <div className="flex flex-1 flex-col justify-end">
             <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild className="flex justify-start">
-                <Badge className={cn(colorClasses, "w-fit")}>
+              <DialogTrigger asChild>
+                <Button
+                  disabled={sale.status === "CANCELED"}
+                  className={cn(
+                    colorClasses,
+                    "h-5 w-fit rounded-md px-2 py-1 text-xs font-medium",
+                    {
+                      "pointer-events-none opacity-50":
+                        sale.status === "CANCELED",
+                    },
+                  )}
+                >
                   {convertStatus(sale.status)}
-                </Badge>
+                </Button>
               </DialogTrigger>
+
               <DialogContent>
                 <DialogTitle>Status do Pedido</DialogTitle>
                 <DialogDescription>

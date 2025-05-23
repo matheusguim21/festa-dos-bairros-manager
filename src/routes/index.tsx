@@ -1,6 +1,6 @@
 import { AppLayout } from "@/layouts/app.layout";
 import { Stock } from "@/pages/stock";
-import Vendas from "@/pages/vendas/vendas";
+import Vendas from "@/pages/vendas";
 import { Routes, Route, BrowserRouter } from "react-router";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicRoute } from "./PublicRoute";

@@ -17,7 +17,7 @@ export function StockProductsCard({ product }: Props) {
 
   return (
     <div className="flex justify-between gap-2 rounded-md border-2 border-primary bg-muted px-2 shadow-md">
-      {product.quantity <= 5 && (
+      {product.quantity <= product.criticalStock && (
         <Popover>
           <PopoverTrigger>
             <TriangleAlert className="h-7 w-7 text-red-500" />

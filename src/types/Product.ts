@@ -4,5 +4,7 @@ export interface Product {
   quantity: number;
   stallId: number;
   price: number;
+  criticalStock: number;
   createdAt: string;
+  updatedAt: string;
 }
