@@ -1,5 +1,5 @@
 import { Product } from "@/types/Product";
-import { Pencil, TriangleAlert } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";

@@ -1,6 +1,6 @@
+import { AddProductForm } from "@/components/forms/AddProductForm";
 import { api } from "./api";
 import { Product } from "@/types/Product";
-import { AddProductForm } from "@/components/inputs/AddProductForm";
 
 interface getAllProductsResponse {
   content: Product[] | [];

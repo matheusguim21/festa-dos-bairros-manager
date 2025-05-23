@@ -30,18 +30,7 @@ import { toast } from "sonner";
 import { UpdateOrderStatusForm } from "../forms/UpdateOrderStatusForm";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogFooter,
-  AlertDialogHeader,
-} from "../ui/alert-dialog";
-import {
-  AlertDialogContent,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+
 import { useAuth } from "@/contexts/Auth.context";
 
 interface Props {
