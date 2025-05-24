@@ -14,7 +14,7 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
-import { OrderStatusForm } from "../sale/SaleCard";
+import { OrderStatusForm } from "../order/OrderCard";
 import { useAuth } from "@/contexts/Auth.context";
 import { Button } from "../ui/button";
 import {

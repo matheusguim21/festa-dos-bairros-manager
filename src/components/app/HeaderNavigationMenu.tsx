@@ -52,11 +52,13 @@ export function HeaderNavigationMenu() {
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <NavigationMenuLink
-                    href="/vendas"
+                    href={
+                      user?.role === "STALL_SELLER" ? "preparing" : "vendas"
+                    }
                     className="flex w-full gap-2"
                   >
                     <ScrollText size={20} />
-                    <span>Vendas</span>
+                    <span>Pedidos</span>
                   </NavigationMenuLink>
                 </DropdownMenuItem>
                 {user?.role === "ADMIN" ? (
@@ -100,7 +102,7 @@ export function HeaderNavigationMenu() {
               <NavigationMenuLink asChild>
                 <NavLink to={"/vendas"}>
                   <ScrollText size={20} />
-                  <span>Vendas</span>
+                  <span>Pedidos</span>
                 </NavLink>
               </NavigationMenuLink>
             </NavigationMenuItem>

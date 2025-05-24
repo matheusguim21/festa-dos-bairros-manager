@@ -9,5 +9,6 @@ export function ProtectedRoute() {
 
     return <Navigate to={"/auth/login"} />;
   }
+
   return <Outlet />;
 }

@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/Auth.context";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Helmet } from "@dr.pogodin/react-helmet";
-import { SaleCard } from "@/components/sale/SaleCard";
+import { OrderCard } from "@/components/order/OrderCard";
 import { ordersService } from "@/api/orders.service";
 
 export default function Vendas() {
@@ -20,7 +20,7 @@ export default function Vendas() {
         <Helmet title="Vendas" />
         {/* padding bottom para não cobrir os cards */}
         <div className="flex flex-col gap-5">
-          {data?.content.map((sale) => <SaleCard key={sale.id} sale={sale} />)}
+          {data?.content.map((sale) => <OrderCard key={sale.id} sale={sale} />)}
         </div>
       </div>
     </main>

@@ -47,3 +47,14 @@ export const saleStatusTranslation: Record<SaleStatusApi, SaleStatus> = {
 export function convertStatus(apiStatus: SaleStatusApi): SaleStatus {
   return saleStatusTranslation[apiStatus];
 }
+
+export type SocketOrder = Sale & {
+  items: {
+    product: {
+      id: number;
+      name: string;
+      price: number;
+    };
+    quantity: number;
+  }[];
+};

@@ -6,6 +6,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicRoute } from "./PublicRoute";
 import { Login } from "@/pages/auth/login";
 import Home from "@/pages/home";
+import OrdersToPrepare from "@/pages/OrdersToPrepare";
 
 export function AppRoutes() {
   return (
@@ -19,6 +20,7 @@ export function AppRoutes() {
             <Route index element={<Home />} />
             <Route path="estoque" element={<Stock />} />
             <Route path="vendas" element={<Vendas />} />
+            <Route path="preparing" element={<OrdersToPrepare />} />
           </Route>
         </Route>
       </Routes>

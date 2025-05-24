@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { OrderItemsList } from "../order/cart/OrderItemsLis";
+import { OrderItemsList } from "./cart/OrderItemsLis";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ordersService } from "@/api/orders.service";
 import { Info } from "lucide-react";
@@ -46,7 +46,7 @@ export const orderStatusSchema = z.object({
 
 export type OrderStatusForm = z.infer<typeof orderStatusSchema>;
 
-export function SaleCard({ sale }: Props) {
+export function OrderCard({ sale }: Props) {
   const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
