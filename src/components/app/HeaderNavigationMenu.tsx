@@ -53,7 +53,7 @@ export function HeaderNavigationMenu() {
                 <DropdownMenuItem>
                   <NavigationMenuLink
                     href={
-                      user?.role === "STALL_SELLER" ? "preparing" : "vendas"
+                      user?.role === "ORDER_PREPARER" ? "preparing" : "vendas"
                     }
                     className="flex w-full gap-2"
                   >

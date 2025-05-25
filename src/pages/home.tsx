@@ -7,6 +7,7 @@ import { Cart } from "@/components/order/cart/Cart";
 
 export default function Home() {
   const { user } = useAuth();
+  console.log("ROle do usuariuo: ", user?.role);
 
   const { data } = useQuery({
     queryKey: ["products"],

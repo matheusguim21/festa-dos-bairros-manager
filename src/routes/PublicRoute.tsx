@@ -2,14 +2,14 @@ import { useAuth } from "@/contexts/Auth.context";
 import { Navigate, Outlet } from "react-router";
 
 export function PublicRoute() {
-  const { user } = useAuth();
+  const { user } = useAuth(); // Supondo que useAuth indique se o estado carregou
 
   if (user) {
     if (user.role === "ORDER_PREPARER") {
-      return <Navigate to={"/preparing"} />;
+      return <Navigate to="/preparing" replace />;
     }
-    console.log("User: ", user);
-    return <Navigate to={"/"} />;
+    return <Navigate to="/" replace />;
   }
+
   return <Outlet />;
 }

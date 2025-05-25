@@ -4,20 +4,24 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { OrderPreparationCard } from "@/components/order/OrderPraprationsCard";
 
-const socket = io(`${import.meta.env.VITE_API_URL}/order/preparing`); // ou seu endpoint
-
 export default function OrdersToPrepare() {
   const [orders, setOrders] = useState<SocketOrder[]>([]);
-
   useEffect(() => {
-    socket.on("connect", () => console.log("✅ conectado"));
+    const url = `${import.meta.env.VITE_API_URL}/order/preparing`;
+    console.log("📡 Conectando ao WebSocket:", url);
+
+    const socket = io(url, {
+      transports: ["websocket"],
+    });
+
+    socket.on("connect", () => console.log("✅ conectado ao socket"));
     socket.on("orders:pending", (data: SocketOrder[]) => {
-      console.log(data);
-      setOrders(data); // substitui em vez de acumular
+      console.log("📦 Dados recebidos do socket:", data);
+      setOrders(data);
     });
 
     return () => {
-      socket.off("orders-pending");
+      socket.disconnect(); // mais seguro que apenas .off
     };
   }, []);
 
