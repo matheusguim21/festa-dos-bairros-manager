@@ -36,6 +36,10 @@ export function AppRoutes() {
               index: true,
               element: <StallOrder />,
             },
+            {
+              path: "estoque",
+              element: <Stock />,
+            },
           ],
         },
       ],
