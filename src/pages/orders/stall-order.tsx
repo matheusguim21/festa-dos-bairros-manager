@@ -5,7 +5,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { Cart } from "@/components/order/cart/Cart";
 
-export default function Home() {
+export default function StallOrder() {
   const { user } = useAuth();
   console.log("ROle do usuariuo: ", user?.role);
 
@@ -20,7 +20,7 @@ export default function Home() {
     <div className="px-5 py-5 pb-32">
       <Helmet title="Ínicio" />
       {/* padding bottom para não cobrir os cards */}
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap gap-5">
         {data?.content.map((product) => (
           <OrderProductsCard key={product.id} product={product} />
         ))}

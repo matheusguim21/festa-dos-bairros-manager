@@ -19,7 +19,7 @@ export default function Vendas() {
       <div className="px-3 py-5 pb-24">
         <Helmet title="Vendas" />
         {/* padding bottom para não cobrir os cards */}
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-wrap gap-5">
           {data?.content.map((sale) => <OrderCard key={sale.id} sale={sale} />)}
         </div>
       </div>
