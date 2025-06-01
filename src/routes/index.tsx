@@ -1,6 +1,10 @@
-
 // src/routes/AppRoutes.tsx
-import { createBrowserRouter, RouterProvider, RouteObject } from "react-router";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  RouteObject,
+  Navigate,
+} from "react-router";
 import { RequireAuth } from "./RequireAuth";
 
 import { PublicRoute } from "./PublicRoute";
@@ -11,13 +15,13 @@ import { Login } from "@/pages/public/auth/login";
 import UnauthorizedPage from "@/pages/public/unauthorized";
 
 export function AppRoutes() {
-
   const { user } = useAuth();
 
   const publicRoutes: RouteObject[] = [
     {
       element: <PublicRoute />,
       children: [
+        { path: "/", element: <Navigate to="/auth/login" replace /> },
         { path: "/auth/login", element: <Login /> },
         { path: "/unauthorized", element: <UnauthorizedPage /> },
       ],
@@ -42,8 +46,6 @@ export function AppRoutes() {
   ];
 
   const router = createBrowserRouter([...publicRoutes, ...privateRoutes]);
-
- 
 
   return <RouterProvider router={router} />;
 }
