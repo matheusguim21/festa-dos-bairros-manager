@@ -1,9 +1,10 @@
+import { Role } from "./Role";
 import { Stall } from "./Stall";
 
 export type User = {
   id: number;
   username: string;
   name: string;
-  role: "ADMIN" | "STALL_SELLER" | "ORDER_PREPARER" | "CASHIER";
+  role: Role;
   stall: Stall;
 };

@@ -72,34 +72,36 @@ export function LoginFilters() {
 
   return (
     <Form {...form}>
-      <div className="flex flex-1 flex-col gap-5">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome de usuário</FormLabel>
-              <FormControl>
-                <Input
-                  autoCapitalize="none"
-                  className="border-2"
-                  placeholder=""
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <PasswordInput fieldName="password" form={form} />
-        <Button
-          className="w-full text-background"
-          type="submit"
-          onClick={form.handleSubmit(onSubmit)}
-        >
-          Entrar
-        </Button>
-      </div>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="flex flex-1 flex-col gap-5">
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nome de usuário</FormLabel>
+                <FormControl>
+                  <Input
+                    autoCapitalize="none"
+                    className="border-2"
+                    placeholder=""
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <PasswordInput fieldName="password" form={form} />
+          <Button
+            className="w-full text-background"
+            type="submit"
+            onClick={form.handleSubmit(onSubmit)}
+          >
+            Entrar
+          </Button>
+        </div>
+      </form>
     </Form>
   );
 }

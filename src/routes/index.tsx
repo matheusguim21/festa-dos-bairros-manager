@@ -1,57 +1,49 @@
-import { AppLayout } from "@/layouts/app.layout";
-import { Stock } from "@/pages/stock/stock";
-import Vendas from "@/pages/orders/orders-history";
-import { Routes, Route, BrowserRouter } from "react-router";
-import { ProtectedRoute } from "./ProtectedRoute";
+
+// src/routes/AppRoutes.tsx
+import { createBrowserRouter, RouterProvider, RouteObject } from "react-router";
+import { RequireAuth } from "./RequireAuth";
+
 import { PublicRoute } from "./PublicRoute";
-import { Login } from "@/pages/auth/login";
-import StallOrder from "@/pages/orders/stall-order";
-import OrdersToPrepare from "@/pages/orders/OrdersToPrepare";
+import { AppLayout } from "@/layouts/app.layout";
+import { useAuth } from "@/contexts/Auth.context";
+import { roleRoutes } from "./RoleRoutes";
+import { Login } from "@/pages/public/auth/login";
+import UnauthorizedPage from "@/pages/public/unauthorized";
 
 export function AppRoutes() {
-  // const router = createBrowserRouter([
-  //   {
-  //     element: <PublicRoute />,
-  //     children: [
-  //       {
-  //         path: "/auth/login",
-  //         element: <Login />,
-  //       },
-  //     ],
-  //   },
 
-  //   {
-  //     element: <ProtectedRoute />,
-  //     children: [
-  //       {
-  //         path: "/",
-  //         element: <AppLayout />,
-  //         children: [
-  //           {
-  //             index: true,
-  //             element: <StallOrder />,
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  // ]);
+  const { user } = useAuth();
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<PublicRoute />}>
-          <Route element={<Login />} path="/auth/login" />
-        </Route>
-        <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<AppLayout />}>
-            <Route index element={<StallOrder />} />
-            <Route path="estoque" element={<Stock />} />
-            <Route path="vendas" element={<Vendas />} />
-            <Route path="preparing" element={<OrdersToPrepare />} />
-          </Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
+  const publicRoutes: RouteObject[] = [
+    {
+      element: <PublicRoute />,
+      children: [
+        { path: "/auth/login", element: <Login /> },
+        { path: "/unauthorized", element: <UnauthorizedPage /> },
+      ],
+    },
+  ];
+
+  // se user existir, pega o array de rotas do role dele
+  const privateChildren: RouteObject[] = user
+    ? [
+        {
+          element: <AppLayout />,
+          children: roleRoutes[user.role] || [],
+        },
+      ]
+    : [];
+
+  const privateRoutes: RouteObject[] = [
+    {
+      element: <RequireAuth />,
+      children: privateChildren,
+    },
+  ];
+
+  const router = createBrowserRouter([...publicRoutes, ...privateRoutes]);
+
+ 
+
+  return <RouterProvider router={router} />;
 }
