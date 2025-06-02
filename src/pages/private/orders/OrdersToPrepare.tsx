@@ -1,10 +1,12 @@
 // src/pages/preparar-pedidos.tsx
+import { OrderPreparationCard } from "@/components/order/cart/preparing/OrderPraprationsCard";
+import { useAuth } from "@/contexts/Auth.context";
 import { SocketOrder } from "@/types/Sales";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { OrderPreparationCard } from "@/components/order/OrderPraprationsCard";
 
 export default function OrdersToPrepare() {
+  const { user } = useAuth();
   const [orders, setOrders] = useState<SocketOrder[]>([]);
   useEffect(() => {
     const url = `${import.meta.env.VITE_API_URL}/order/preparing`;
@@ -12,6 +14,7 @@ export default function OrdersToPrepare() {
 
     const socket = io(url, {
       transports: ["websocket"],
+      query: { stallId: user!.stall.id },
     });
 
     socket.on("connect", () => console.log("✅ conectado ao socket"));

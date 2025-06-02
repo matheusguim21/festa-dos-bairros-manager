@@ -24,7 +24,7 @@ export function OrderProductsCard({ product }: Props) {
   return (
     <div
       className={cn(
-        "flex flex-1 justify-between gap-2 rounded-md border-2 border-primary bg-muted px-2 shadow-md",
+        "flex max-w-96 flex-1 justify-between gap-2 rounded-md border-2 border-primary bg-muted px-2 shadow-md",
         product.quantity <= 0 && "select-none opacity-50",
       )}
     >

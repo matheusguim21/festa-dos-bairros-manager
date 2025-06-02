@@ -10,9 +10,9 @@ import {
 import { UpdateStockItemForm } from "../forms/UpdateStockItemForm";
 import { useForm } from "react-hook-form";
 import {
+  createUpdateStockItemSchema,
   Operation,
   UpdateStockItemFormData,
-  updateStockItemSchema,
 } from "@/types/schemas/update-stock-item-schema";
 import { Product } from "@/types/Product";
 import { Button } from "../ui/button";
@@ -30,7 +30,7 @@ interface Props {
 export function UpdateStockModal({ product }: Props) {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
-
+  const dynamicSchema = createUpdateStockItemSchema(product.quantity);
   const form = useForm<UpdateStockItemFormData>({
     defaultValues: {
       operation: Operation.NOONE,
@@ -41,7 +41,7 @@ export function UpdateStockModal({ product }: Props) {
       criticalStock: product.criticalStock,
       stallId: product.stallId,
     },
-    resolver: zodResolver(updateStockItemSchema),
+    resolver: zodResolver(dynamicSchema),
   });
 
   const { mutate } = useMutation({

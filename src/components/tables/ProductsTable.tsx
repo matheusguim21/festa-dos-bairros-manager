@@ -30,7 +30,7 @@ export default function ProductsTable({ data }: Props) {
     };
   });
   return (
-    <Table className="overflow-auto bg-muted">
+    <Table className="max-w-[1000px] overflow-auto bg-muted">
       <TableHeader className="bg-muted-foreground">
         <TableRow>
           <TableHead className="rounded-s text-lg text-background">

@@ -7,7 +7,6 @@ import { Cart } from "@/components/order/cart/Cart";
 
 export default function StallOrder() {
   const { user } = useAuth();
-  console.log("ROle do usuariuo: ", user?.role);
 
   const { data } = useQuery({
     queryKey: ["products"],

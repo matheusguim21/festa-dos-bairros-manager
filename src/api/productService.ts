@@ -14,7 +14,7 @@ interface UpdateProductsRequest {
   productId: number;
   name?: string;
   price: number;
-  quantity: number;
+  quantity?: number;
   criticalStock: number;
   stallId: number;
   operation: Operation;
