@@ -24,8 +24,9 @@ import { PriceInput } from "../inputs/PriceInput";
 import { cn } from "@/lib/utils";
 import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { getAllStalls } from "@/api/shared/get-stalls";
+import { useAuth } from "@/contexts/Auth.context";
 
 interface Props {
   form: UseFormReturn<UpdateStockItemFormData>;
@@ -33,7 +34,7 @@ interface Props {
 
 export function UpdateStockItemForm({ form }: Props) {
   const operation = form.watch("operation");
-
+  const { user } = useAuth();
   const operationOptions = Object.values(Operation);
 
   const { data } = useQuery({
@@ -49,10 +50,27 @@ export function UpdateStockItemForm({ form }: Props) {
     }));
   }, [data]);
 
+  // Ao mudar para NOONE, zera operationQuantity
+  const oper = form.watch("operation");
+  useEffect(() => {
+    if (oper === Operation.NOONE) {
+      form.setValue("operationQuantity", 0, {
+        shouldValidate: false,
+        shouldDirty: true,
+      });
+    }
+  }, [oper, form.setValue]);
+
   return (
     <Form {...form}>
       <form>
+        {/**
+         * Um único grid de 2 colunas para TODOS os campos.
+         * O Tailwind `grid-cols-2` não quebra em telas menores,
+         * então SEMPRE serão 2 colunas (cada item encolhe, mas permanece lado a lado).
+         */}
         <div className="grid grid-cols-2 gap-2">
+          {/** 1) Tipo de Operação */}
           <FormField
             control={form.control}
             name="operation"
@@ -93,36 +111,50 @@ export function UpdateStockItemForm({ form }: Props) {
 
                       <SelectContent>
                         {operationOptions.map((option) => (
-                          <SelectItem value={option}>
+                          <SelectItem key={option} value={option}>
                             {OPERATION_LABELS[option]}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               );
             }}
           />
-          <FormField
-            control={form.control}
-            name="operationQuantity"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Quantidade</FormLabel>
-                <FormControl>
-                  <Input
-                    className="disabled:border-0"
-                    type="number"
-                    disabled={operation === Operation.NOONE}
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-2">
+
+          {/**
+           * 2) Quantidade só se operação ≠ NOONE.
+           *    Quando for NOONE, esse FormField não será renderizado e o próximo ficará no lugar.
+           */}
+          {oper !== Operation.NOONE && (
+            <FormField
+              control={form.control}
+              name="operationQuantity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Quantidade{" "}
+                    {oper === Operation.IN
+                      ? "de entrada"
+                      : oper === Operation.OUT && "de saída"}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      className="disabled:border-0"
+                      type="number"
+                      disabled={operation === Operation.NOONE}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          {/** 3) Preço do produto */}
           <FormField
             control={form.control}
             name="productPrice"
@@ -132,9 +164,12 @@ export function UpdateStockItemForm({ form }: Props) {
                 <FormControl>
                   <PriceInput field={field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
+
+          {/** 4) Nome do item */}
           <FormField
             control={form.control}
             name="productName"
@@ -144,11 +179,12 @@ export function UpdateStockItemForm({ form }: Props) {
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
-        </div>
-        <div className="grid grid-cols-2 gap-2">
+
+          {/** 5) Valor crítico do estoque */}
           <FormField
             control={form.control}
             name="criticalStock"
@@ -158,36 +194,41 @@ export function UpdateStockItemForm({ form }: Props) {
                 <FormControl>
                   <Input type="number" {...field} />
                 </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="stallId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Barraca</FormLabel>
-                <FormControl>
-                  <Select
-                    onValueChange={(val) => field.onChange(Number(val))}
-                    value={String(field.value)}
-                  >
-                    <SelectTrigger className="border border-primary">
-                      <SelectValue placeholder="Selecione a Barraca" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {options.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
+          {/** 6) Barraca só para ADMIN */}
+          {user?.role === "ADMIN" && (
+            <FormField
+              control={form.control}
+              name="stallId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Barraca</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={(val) => field.onChange(Number(val))}
+                      value={String(field.value)}
+                    >
+                      <SelectTrigger className="border border-primary">
+                        <SelectValue placeholder="Selecione a Barraca" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {options.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
         </div>
       </form>
     </Form>

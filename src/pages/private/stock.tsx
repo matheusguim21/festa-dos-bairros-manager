@@ -106,14 +106,11 @@ export function Stock() {
           {isMobile && <AddProductModal />}
         </div>
       </section>
-      <section className="flex flex-col gap-2">
-        {isMobile ? (
-          data?.content.map((product) => (
-            <StockProductsCard product={product} key={product.id} />
-          ))
-        ) : (
-          <ProductsTable data={data?.content || []} />
-        )}
+      <section className="flex flex-wrap gap-2">
+        {data?.content.map((product) => (
+          <StockProductsCard product={product} key={product.id} />
+        ))}
+
         {data && (
           <Pagination
             pageIndex={data.page}

@@ -16,7 +16,7 @@ export function StockProductsCard({ product }: Props) {
   });
 
   return (
-    <div className="flex justify-between gap-2 rounded-md border-2 border-primary bg-muted px-2 shadow-md">
+    <div className="flex max-w-[500px] flex-1 justify-between gap-2 rounded-md border-2 border-primary bg-muted px-2 shadow-md">
       {product.quantity <= product.criticalStock && (
         <Popover>
           <PopoverTrigger>
