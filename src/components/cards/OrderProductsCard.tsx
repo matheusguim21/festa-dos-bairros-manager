@@ -28,7 +28,7 @@ export function OrderProductsCard({ product }: Props) {
         product.quantity <= 0 && "select-none opacity-50",
       )}
     >
-      {product.quantity <= 5 && (
+      {product.quantity <= product.criticalStock && (
         <Popover>
           <PopoverTrigger>
             <TriangleAlert className="h-7 w-7 text-red-500" />

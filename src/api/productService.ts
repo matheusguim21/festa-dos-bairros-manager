@@ -27,10 +27,10 @@ interface getAllProductsRequest {
 
 export const productsService = {
   async getAllProducts({
-    limit = 5,
+    limit = 50,
     page = 1,
     search,
-  }: getAllProductsRequest): Promise<getAllProductsResponse> {
+  }: getAllProductsRequest = {}): Promise<getAllProductsResponse> {
     const response = await api.get("products", {
       params: {
         search,

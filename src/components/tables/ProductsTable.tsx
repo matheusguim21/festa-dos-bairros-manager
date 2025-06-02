@@ -14,7 +14,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-
 interface Props {
   data: Product[];
 }
