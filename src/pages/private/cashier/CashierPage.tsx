@@ -20,7 +20,7 @@ export default function CashierPage() {
             </TabsList>
 
             {/* Conteúdo das abas ocupa todo o espaço restante e tem overflow */}
-            <TabsContent value="fichas" className="flex justify-center">
+            <TabsContent value="fichas" className="flex justify-center pt-5">
               <FichasTab />
             </TabsContent>
 
