@@ -2,7 +2,6 @@ import { productsService } from "@/api/productService";
 import { StockFilters } from "@/components/filters/StockFilters";
 import { AddProductModal } from "@/components/modals/AddProductModal";
 import { Pagination } from "@/components/pagination";
-import ProductsTable from "@/components/tables/ProductsTable";
 
 import { useAuth } from "@/contexts/Auth.context";
 import { useIsMobile } from "@/hooks/use-mobile";

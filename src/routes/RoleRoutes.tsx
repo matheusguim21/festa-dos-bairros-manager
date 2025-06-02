@@ -1,4 +1,4 @@
-import TokenSale from "@/pages/private/cashier/TokenSale";
+import CashierPage from "@/pages/private/cashier/CashierPage";
 import Vendas from "@/pages/private/orders/orders-history";
 import OrdersToPrepare from "@/pages/private/orders/OrdersToPrepare";
 import StallOrder from "@/pages/private/orders/stall-order";
@@ -65,7 +65,7 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
     { path: "estoque", label: "Estoque", element: <Stock /> },
     {
       path: "caixa",
-      element: <TokenSale />,
+      element: <CashierPage />,
       label: "Caixa",
       icon: <Computer size={20} />,
     },
@@ -73,7 +73,7 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
   [Role.CASHIER]: [
     {
       path: "caixa",
-      element: <TokenSale />,
+      element: <CashierPage />,
       label: "Caixa",
       icon: <Computer size={20} />,
     },

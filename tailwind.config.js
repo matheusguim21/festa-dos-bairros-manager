@@ -10,6 +10,9 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        brown: {
+          DEFAULT: "hsl(var(--brown))",
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -84,10 +87,15 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       screens: {
-        sm: "300px", // small devices
+        xs: "320px", // extra small devices
+        xxs: "280px", // extra extra small devices
+        sm: "370px", // small devices
         md: "768px", // tablets
         lg: "1024px", // laptops
-        xl: "1280px", // desktops
+        xl: "1366px", // desktops
+        "2xl": "1536px", // large desktops
+        "3xl": "1920px", // extra large desktops
+        "4xl": "2560px", // ultra wide screens
       },
     },
   },
