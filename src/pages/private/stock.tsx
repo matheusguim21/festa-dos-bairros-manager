@@ -56,7 +56,7 @@ export function Stock() {
   });
 
   return (
-    <main className="flex h-screen flex-col gap-5 overflow-auto px-5 py-5 pb-10">
+    <main className="flex h-screen flex-col gap-5 overflow-auto px-5 py-5 pb-24">
       <Helmet>
         <title>Estoque</title>
       </Helmet>

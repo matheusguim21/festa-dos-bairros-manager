@@ -14,12 +14,13 @@ import {
 import { useAuth } from "@/contexts/Auth.context";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { LogOut } from "lucide-react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { RoleRoute, roleRoutes } from "@/routes/RoleRoutes";
 
 export function HeaderNavigationMenu() {
   const { user, signOut } = useAuth();
   const isMobile = useIsMobile();
+  const [open, setOpen] = useState(false);
   if (!user) return null;
 
   // Pega só as rotas que têm label e icon (menu) para o role atual
@@ -33,17 +34,24 @@ export function HeaderNavigationMenu() {
       <NavigationMenuList className="flex items-center gap-5 p-5">
         {isMobile ? (
           <NavigationMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-2 rounded-md border bg-muted px-3 py-2">
+            <DropdownMenu open={open}>
+              <DropdownMenuTrigger
+                className="flex items-center gap-2 rounded-md border bg-muted px-3 py-2"
+                onClick={() => setOpen(true)}
+              >
                 {user.name}
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
                 {items.map(({ path, index, label, icon }) => {
                   const to = index ? "/" : `/${path}`;
                   return (
-                    <DropdownMenuItem className="min-w-32" key={to}>
+                    <DropdownMenuItem className="min-w-24" key={to}>
                       <NavigationMenuLink asChild className="flex">
-                        <NavLink className="border border-red-500" to={to}>
+                        <NavLink
+                          className="border border-red-500"
+                          to={to}
+                          onClick={() => setOpen(false)}
+                        >
                           {icon}
                           <span>{label}</span>
                         </NavLink>
