@@ -16,7 +16,7 @@ export default function StallOrder() {
   });
 
   return (
-    <div className="px-5 py-5 pb-32">
+    <div className="h-screen overflow-auto px-5 py-5 pb-32">
       <Helmet title="Ínicio" />
       {/* padding bottom para não cobrir os cards */}
       <div className="flex flex-wrap gap-5">
