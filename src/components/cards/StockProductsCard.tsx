@@ -1,5 +1,4 @@
 import { Product } from "@/types/Product";
-import { TriangleAlert } from "lucide-react";
 
 import { UpdateStockModal } from "../modals/UpdateStockModal";
 import { cn, numberFormatterToCurrency } from "@/lib/utils";

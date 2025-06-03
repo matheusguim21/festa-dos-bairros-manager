@@ -1,10 +1,6 @@
 // src/components/preparation/OrderPreparationCard.tsx
 
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
-
-import { cn } from "@/lib/utils";
-import { convertStatus, SocketOrder, statusColorMap } from "@/types/Sales";
+import { SocketOrder, statusColorMap } from "@/types/Sales";
 
 interface Props {
   item: SocketOrder;
