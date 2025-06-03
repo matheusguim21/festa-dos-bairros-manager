@@ -41,12 +41,9 @@ export function HeaderNavigationMenu() {
                 {items.map(({ path, index, label, icon }) => {
                   const to = index ? "/" : `/${path}`;
                   return (
-                    <DropdownMenuItem key={to}>
-                      <NavigationMenuLink asChild>
-                        <NavLink
-                          to={to}
-                          className="flex w-full items-center gap-2"
-                        >
+                    <DropdownMenuItem className="min-w-32" key={to}>
+                      <NavigationMenuLink asChild className="flex">
+                        <NavLink className="border border-red-500" to={to}>
                           {icon}
                           <span>{label}</span>
                         </NavLink>

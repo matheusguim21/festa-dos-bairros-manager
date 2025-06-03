@@ -11,14 +11,12 @@ export function NavLink(props: NavLinkProps) {
     <Link
       data-current={props.to === pathname}
       {...props}
-      className={
-        (cn(
-          "flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground",
-        ),
+      className={cn(
+        "flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground",
         isMobile
           ? "data-[current=true]:text-primary"
-          : "data-[current=true]:text-background")
-      }
+          : "data-[current=true]:text-background",
+      )}
     />
   );
 }

@@ -4,7 +4,7 @@ import OrdersToPrepare from "@/pages/private/orders/OrdersToPrepare";
 import StallOrder from "@/pages/private/orders/stall-order";
 import { Stock } from "@/pages/private/stock";
 import { Role } from "@/types/Role";
-import { Store, ScrollText, Computer, Home } from "lucide-react";
+import { Store, ScrollText, Computer, Home, Box } from "lucide-react";
 import { ReactNode } from "react";
 import { RouteObject } from "react-router";
 
@@ -35,7 +35,32 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
     },
   ],
   [Role.STALL_SUPPORT]: [
-    { index: true, element: <Stock /> },
+    {
+      index: true,
+      element: <Stock />,
+      label: "Estoque",
+      icon: <Box size={20} />,
+    },
+    {
+      path: "pedidos",
+      element: <Vendas />,
+      label: "Pedidos",
+      icon: <ScrollText size={20} />,
+    },
+  ],
+  [Role.STALL_ADMIN]: [
+    {
+      index: true,
+      element: <Stock />,
+      label: "Estoque",
+      icon: <Box size={20} />,
+    },
+    {
+      path: "venda",
+      element: <StallOrder />,
+      label: "Venda",
+      icon: <Store size={20} />,
+    },
     {
       path: "pedidos",
       element: <Vendas />,
