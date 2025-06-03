@@ -53,7 +53,7 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
     {
       index: true,
       label: "Início",
-      element: <StallOrder />,
+      element: <Stock />,
       icon: <Home size={20} />,
     },
     {

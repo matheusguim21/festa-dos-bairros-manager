@@ -1,4 +1,3 @@
-import { Pencil } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -84,20 +83,12 @@ export function UpdateStockModal({ product }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Pencil
-          className="h-6 w-6 cursor-pointer self-center rounded-md border-2 border-foreground"
-          onClick={() =>
-            form.reset({
-              operation: Operation.NOONE,
-              productId: product.id,
-              productName: product.name,
-              productPrice: product.price,
-              operationQuantity: 0,
-              criticalStock: product.criticalStock,
-              stallId: product.stallId,
-            })
-          }
-        />
+        <Button
+          className="w-full text-background"
+          onClick={() => setOpen(true)}
+        >
+          Editar
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -9,7 +9,10 @@ export default function Vendas() {
 
   const { data } = useQuery({
     queryKey: ["sales"],
-    queryFn: () => ordersService.getAllOrdersByStall(user!.stall.id),
+    queryFn: () =>
+      user?.role === "ADMIN"
+        ? ordersService.getAllOrders()
+        : ordersService.getAllOrdersByStall(user!.stall.id),
     enabled: true,
     placeholderData: keepPreviousData,
   });

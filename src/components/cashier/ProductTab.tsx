@@ -13,7 +13,7 @@ import {
   CashierProductsForm,
   cashierProductsSchema,
 } from "@/types/schemas/cashier-products-search";
-import { useEffect, useState } from "react";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue"; // importe o hook
 
 export function ProdutosTab() {
   const addItem = useCaixaStore((state) => state.addItem);
@@ -28,37 +28,31 @@ export function ProdutosTab() {
   const form = useForm<CashierProductsForm>({
     resolver: zodResolver(cashierProductsSchema),
     defaultValues: {
+      productName: "",
       stallId: undefined,
     },
   });
 
+  // valor “puro” (em tempo real) do campo de busca
   const productNameFilter = form.watch("productName") || "";
   const stallIdFilter = form.watch("stallId");
 
-  const [debouncedName, setDebouncedName] = useState(productNameFilter);
+  // usa nosso hook para criar a versão “debounced” de productNameFilter
+  const debouncedName = useDebouncedValue<string>(productNameFilter, 300);
+
   const filteredProducts = products?.content.filter((product) => {
-    // Se productNameFilter for string vazia, matchesName = true => inclui tudo.
+    // se debouncedName for string vazia, matchesName = true => inclui tudo
     const matchesName = debouncedName
-      ? product.name.toLowerCase().includes(productNameFilter.toLowerCase())
+      ? product.name.toLowerCase().includes(debouncedName.toLowerCase())
       : true;
 
-    // idem para stallIdFilter: se for undefined/”“, matchesStall = true => inclui tudo.
+    // idem para stallIdFilter: se undefined/”“, matchesStall = true => inclui tudo
     const matchesStall = stallIdFilter
       ? product.stallId === stallIdFilter
       : true;
 
     return matchesName && matchesStall;
   });
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedName(productNameFilter);
-    }, 300); // 300ms de debounce
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [productNameFilter]);
 
   return (
     <div className="flex h-[calc(100vh-15%)] flex-col gap-3 pb-5">

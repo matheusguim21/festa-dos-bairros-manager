@@ -1,91 +1,62 @@
 import { productsService } from "@/api/productService";
 import { StockFilters } from "@/components/filters/StockFilters";
 import { AddProductModal } from "@/components/modals/AddProductModal";
-import { Pagination } from "@/components/pagination";
 
 import { useAuth } from "@/contexts/Auth.context";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { useForm } from "react-hook-form";
-import { useSearchParams } from "react-router";
 import { z } from "zod";
 import { StockProductsCard } from "@/components/cards/StockProductsCard";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { cn } from "@/lib/utils";
 
 const SearchStockItemSchema = z.object({
-  search: z.string(),
-  limit: z.string(),
+  productName: z.string(),
 });
 type SearchStockItemForm = z.infer<typeof SearchStockItemSchema>;
 export function Stock() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
-  const { control, handleSubmit, watch, getValues } =
-    useForm<SearchStockItemForm>({
-      resolver: zodResolver(SearchStockItemSchema),
-      defaultValues: {
-        limit: searchParams.get("limit") ?? "10",
-        search: "",
-      },
-    });
-  const pageIndex = z.coerce
-    .number()
-
-    .parse(searchParams.get("page") ?? "1");
-
-  const search = searchParams.get("search") || "";
-  const limit = watch("limit");
+  const { control, watch } = useForm<SearchStockItemForm>({
+    resolver: zodResolver(SearchStockItemSchema),
+    defaultValues: {
+      productName: "",
+    },
+  });
 
   const isMobile = useIsMobile();
 
   const { data } = useQuery({
-    queryKey: ["products", pageIndex, limit, search],
+    queryKey: ["products"],
     queryFn: () =>
-      productsService.getAllProductsFromStallById(user!.stall.id, {
-        limit: Number(limit),
-        page: pageIndex,
-        search,
-      }),
+      user?.role === "ADMIN"
+        ? productsService.getAllProducts()
+        : productsService.getAllProductsFromStallById(user!.stall.id),
     enabled: true,
     placeholderData: keepPreviousData,
   });
 
-  function handlePaginate(newPageIndex: number) {
-    setSearchParams((state) => {
-      state.set("page", (newPageIndex + 1).toString());
-      return state;
-    });
-  }
+  // valor “puro” (em tempo real) do campo de busca
+  const productNameFilter = watch("productName") || "";
 
-  const handleSearch = (formData: SearchStockItemForm) => {
-    setSearchParams((state) => {
-      state.set("search", formData.search);
-      state.set("page", "1");
-      return state;
-    });
-  };
+  // usa nosso hook para criar a versão “debounced” de productNameFilter
+  const debouncedName = useDebouncedValue<string>(productNameFilter, 300);
 
-  useEffect(() => {
-    if (limit) {
-      setSearchParams((state) => {
-        state.set("limit", limit);
-        state.set("page", "1");
-        return state;
-      });
-    }
-  }, [limit]);
+  const filteredProducts = data?.content.filter((product) => {
+    // se debouncedName for string vazia, matchesName = true => inclui tudo
+    const matchesName = debouncedName
+      ? product.name.toLowerCase().includes(debouncedName.toLowerCase())
+      : true;
 
-  useEffect(() => {
-    setSearchParams((state) => {
-      state.set("search", getValues().search);
-      return state;
-    });
-  }, []);
+    // idem para stallIdFilter: se undefined/”“, matchesStall = true => inclui tudo
+
+    return matchesName;
+  });
 
   return (
-    <main className="flex flex-col gap-5 px-5 py-5 pb-10">
+    <main className="flex h-screen flex-col gap-5 overflow-auto px-5 py-5 pb-10">
       <Helmet>
         <title>Estoque</title>
       </Helmet>
@@ -96,28 +67,18 @@ export function Stock() {
       <section>
         <div className="flex flex-col gap-5">
           <div className="flex flex-col justify-between md:flex-row">
-            <StockFilters
-              control={control}
-              handleSearch={handleSubmit(handleSearch)}
-            />
+            <StockFilters control={control} />
             {!isMobile && <AddProductModal />}
           </div>
           {isMobile && <AddProductModal />}
         </div>
       </section>
-      <section className="flex flex-wrap gap-2">
-        {data?.content.map((product) => (
+      <section
+        className={cn("flex flex-wrap gap-2", isMobile && "justify-center")}
+      >
+        {filteredProducts?.map((product) => (
           <StockProductsCard product={product} key={product.id} />
         ))}
-
-        {data && (
-          <Pagination
-            pageIndex={data.page}
-            pageCount={data.totalPages}
-            totalCount={data.totalElements}
-            onPageChange={handlePaginate}
-          />
-        )}
       </section>
     </main>
   );
