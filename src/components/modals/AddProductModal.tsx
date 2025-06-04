@@ -21,7 +21,7 @@ export function AddProductModal() {
       <DialogTrigger onClick={() => setIsOpen(true)} asChild>
         <Button>
           <Plus size={20} className="text-background" />
-          <span className="uppercase text-background">adicionar</span>
+          <span className="uppercase text-background">Novo Produto</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="min-w-fit items-center px-10">

@@ -16,9 +16,10 @@ export default function StallOrder() {
   });
 
   return (
-    <div className="h-screen overflow-auto px-5 py-5 pb-32">
+    <div className="flex h-screen flex-col items-center gap-3 overflow-auto px-5 py-5 pb-32">
       <Helmet title="Ínicio" />
       {/* padding bottom para não cobrir os cards */}
+      <h1 className="text-2xl font-bold">Venda</h1>
       <div className="flex flex-wrap gap-5">
         {data?.content.map((product) => (
           <OrderProductsCard key={product.id} product={product} />

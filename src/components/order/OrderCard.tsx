@@ -110,8 +110,8 @@ export function OrderCard({ sale }: Props) {
             <span className="max-w-14 text-lg font-bold">{sale.id}</span>
           </div>
           <div className="flex flex-col justify-center">
-            <span className="text-sm">Cliente</span>
-            <span className="font-bold">{sale.buyerName}</span>
+            <span className="text-sm">Barraca</span>
+            <span className="font-bold">{sale.stall.name}</span>
           </div>
         </div>
         <div className="flex flex-col justify-between">
@@ -175,9 +175,9 @@ export function OrderCard({ sale }: Props) {
         <DialogHeader className="pt-5">
           <div className="flex justify-between">
             <div>
-              <span>Cliente: </span>
+              <span>Barraca: </span>
               <span className="font-medium text-primary">
-                {sale.buyerName}{" "}
+                {sale.stall.name}{" "}
               </span>
             </div>
             <div>

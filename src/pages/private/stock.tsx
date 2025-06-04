@@ -1,6 +1,5 @@
 import { productsService } from "@/api/productService";
 import { StockFilters } from "@/components/filters/StockFilters";
-import { AddProductModal } from "@/components/modals/AddProductModal";
 
 import { useAuth } from "@/contexts/Auth.context";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -68,9 +67,9 @@ export function Stock() {
         <div className="flex flex-col gap-5">
           <div className="flex flex-col justify-between md:flex-row">
             <StockFilters control={control} />
-            {!isMobile && <AddProductModal />}
+            {/* {!isMobile && <AddProductModal />} */}
           </div>
-          {isMobile && <AddProductModal />}
+          {/* {isMobile && <AddProductModal />} */}
         </div>
       </section>
       <section

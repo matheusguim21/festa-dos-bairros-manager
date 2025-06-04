@@ -6,6 +6,6 @@ export type OrderItem = {
 
 export type CreateOrderPayload = {
   stallId: number;
-  buyerName: string;
+  buyerName?: string;
   items: OrderItem[];
 };

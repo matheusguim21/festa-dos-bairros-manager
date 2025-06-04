@@ -1,5 +1,7 @@
 // src/types/status.enums.ts
 
+import { Stall } from "./Stall";
+
 // Status que vem da API (inglês)
 export enum SaleStatusApi {
   PENDING = "PENDING",
@@ -27,6 +29,7 @@ export interface Sale {
   total: number;
   date: string;
   status: SaleStatusApi;
+  stall: Stall;
 }
 export const statusColorMap: Record<Sale["status"], string> = {
   PENDING: "bg-yellow-200 text-yellow-800",

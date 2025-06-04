@@ -18,7 +18,7 @@ export default function Vendas() {
   });
 
   return (
-    <main className="min-h-screen">
+    <main className="h-screen overflow-auto pb-24">
       <div className="px-3 py-5 pb-24">
         <Helmet title="Vendas" />
         {/* padding bottom para não cobrir os cards */}

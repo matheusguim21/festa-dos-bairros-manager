@@ -51,15 +51,15 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
   [Role.STALL_ADMIN]: [
     {
       index: true,
-      element: <Stock />,
-      label: "Estoque",
-      icon: <Box size={20} />,
-    },
-    {
-      path: "venda",
       element: <StallOrder />,
       label: "Venda",
       icon: <Store size={20} />,
+    },
+    {
+      path: "estoque",
+      element: <Stock />,
+      label: "Estoque",
+      icon: <Box size={20} />,
     },
     {
       path: "pedidos",

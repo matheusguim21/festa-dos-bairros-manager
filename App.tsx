@@ -12,7 +12,7 @@ export function App() {
         <Helmet titleTemplate="%s | Festa dos Bairros" />
         <AppRoutes />
       </QueryClientProvider>
-      <Toaster richColors />
+      <Toaster richColors duration={700} />
     </HelmetProvider>
   );
 }

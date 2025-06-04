@@ -9,14 +9,14 @@ export function Login() {
     <main
       className={
         isMobile
-          ? "flex min-h-screen flex-col items-center bg-background"
+          ? "min-h-screen flex-col items-center bg-primary"
           : "grid grid-cols-2"
       }
     >
       <section
         className={
           isMobile
-            ? "flex w-full items-center justify-center bg-background px-5 py-10"
+            ? "flex w-full items-center justify-center bg-primary px-5 py-10"
             : "flex h-[100vh] items-center justify-center bg-primary"
         }
       >
@@ -34,7 +34,7 @@ export function Login() {
             : "flex h-[100vh] flex-1 flex-col items-center justify-center gap-10 px-5"
         }
       >
-        <div className="w-96 max-w-full px-5">
+        <div className="w-96 max-w-full rounded-lg bg-background p-5">
           <h1 className="text-2xl font-bold">Faça login</h1>
           <LoginFilters />
         </div>

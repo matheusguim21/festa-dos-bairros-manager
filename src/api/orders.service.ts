@@ -2,6 +2,7 @@ import { CreateOrderPayload } from "@/types/Orders";
 import { api } from "./api";
 import { Sale, SaleStatusApi } from "@/types/Sales";
 import { Product } from "@/types/Product";
+import { Stall } from "@/types/Stall";
 
 interface GetAllOrdersResponse {
   content: Sale[] | [];
@@ -13,6 +14,7 @@ interface GetAllOrdersResponse {
 type GetAllOrderItemsByOrderIdResponse = {
   product: Product;
   quantity: number;
+  stall: Stall;
 };
 interface GetAllOrdersRequest {
   search?: string;
