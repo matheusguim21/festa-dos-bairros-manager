@@ -3,12 +3,10 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { OrderCard } from "@/components/order/OrderCard";
 import { ordersService } from "@/api/orders.service";
-import { useSearchParams } from "react-router";
 import { useEffect, useState } from "react";
 import { Pagination } from "@/components/pagination";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import { PageSelector } from "@/components/filters/PageSelector";
 
 const searchOrdersSchema = z.object({
