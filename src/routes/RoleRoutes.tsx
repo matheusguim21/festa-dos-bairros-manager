@@ -4,7 +4,7 @@ import OrdersToPrepare from "@/pages/private/orders/OrdersToPrepare";
 import StallOrder from "@/pages/private/orders/stall-order";
 import { Stock } from "@/pages/private/stock";
 import { Role } from "@/types/Role";
-import { Store, ScrollText, Computer, Home, Box } from "lucide-react";
+import { Store, ScrollText, Computer, Box } from "lucide-react";
 import { ReactNode } from "react";
 import { RouteObject } from "react-router";
 
@@ -75,14 +75,14 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
     },
   ],
   [Role.ADMIN]: [
+    // {
+    //   index: true,
+    //   label: "Início",
+    //   element: <Stock />,
+    //   icon: <Home size={20} />,
+    // },
     {
       index: true,
-      label: "Início",
-      element: <Stock />,
-      icon: <Home size={20} />,
-    },
-    {
-      path: "vendas",
       label: "Vendas das Barracas",
       element: <Vendas />,
       icon: <ScrollText size={20} />,
@@ -90,16 +90,16 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
 
     {
       path: "estoque",
-      label: "Estoque",
+      label: "Estoque Geral",
       element: <Stock />,
       icon: <Box size={20} />,
     },
-    {
-      path: "caixa",
-      element: <CashierPage />,
-      label: "Caixa",
-      icon: <Computer size={20} />,
-    },
+    // {
+    //   path: "caixa",
+    //   element: <CashierPage />,
+    //   label: "Caixa",
+    //   icon: <Computer size={20} />,
+    // },
   ],
   [Role.CASHIER]: [
     {

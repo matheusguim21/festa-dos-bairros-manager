@@ -13,14 +13,12 @@ import {
 interface PaginationProps {
   pageIndex: number;
   pageCount: number;
-  totalCount: number;
   onPageChange: (page: number) => void;
 }
 
 export function Pagination({
   pageIndex,
   pageCount,
-  totalCount,
   onPageChange,
 }: PaginationProps) {
   const items = generatePageRange(pageIndex, pageCount);

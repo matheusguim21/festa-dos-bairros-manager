@@ -1,11 +1,19 @@
-// src/components/SaleCard.tsx
-
+import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { format, formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { toast } from "sonner";
 import {
-  convertStatus,
-  Sale,
-  SaleStatusApi,
-  statusColorMap,
-} from "@/types/Sales";
+  Clock,
+  ExternalLink,
+  Package,
+  Receipt,
+  ShoppingBag,
+} from "lucide-react";
+
 import {
   Dialog,
   DialogContent,
@@ -13,30 +21,27 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+
 import { OrderItemsList } from "./cart/OrderItemsLis";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ordersService } from "@/api/orders.service";
-import { Info } from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { cn } from "@/lib/utils";
-
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import { UpdateOrderStatusForm } from "../forms/UpdateOrderStatusForm";
-import { Button } from "../ui/button";
-import { useState } from "react";
-
 import { useAuth } from "@/contexts/Auth.context";
+import { ordersService } from "@/api/orders.service";
+import { cn } from "@/lib/utils";
+import {
+  convertStatus,
+  type Sale,
+  SaleStatusApi,
+  statusColorMap,
+} from "@/types/Sales";
 
 interface Props {
   sale: Sale;
 }
-
-// 1) Mapa de status → classes
 
 export const orderStatusSchema = z.object({
   status: z.enum(
@@ -48,12 +53,9 @@ export type OrderStatusForm = z.infer<typeof orderStatusSchema>;
 
 export function OrderCard({ sale }: Props) {
   const { user } = useAuth();
-
   const [open, setOpen] = useState(false);
-
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const queryClient = useQueryClient();
-
-  // 2) Pega o conjunto de classes pelo status
   const colorClasses = statusColorMap[sale.status];
 
   const form = useForm<OrderStatusForm>({
@@ -62,6 +64,7 @@ export function OrderCard({ sale }: Props) {
     },
     resolver: zodResolver(orderStatusSchema),
   });
+
   const watchedStatus = form.watch("status");
   const originalStatus = form.formState.defaultValues?.status;
   const isStatusChanged = watchedStatus !== originalStatus;
@@ -70,7 +73,8 @@ export function OrderCard({ sale }: Props) {
     queryKey: ["order-item", sale.id],
     queryFn: () => ordersService.getOrderItemsByOrderId(sale.id),
   });
-  const { mutate } = useMutation({
+
+  const { mutate, isPending } = useMutation({
     mutationFn: ({
       orderId,
       newStatus,
@@ -78,13 +82,7 @@ export function OrderCard({ sale }: Props) {
       orderId: number;
       newStatus: SaleStatusApi;
     }) => ordersService.updateOrderStatus(orderId, newStatus),
-
     onError: (error) => toast.error(error.message),
-  });
-
-  const numberFormatter = new Intl.NumberFormat("pt-BR", {
-    currency: "BRL",
-    style: "currency",
   });
 
   const onSubmit = (data: OrderStatusForm) => {
@@ -94,104 +92,193 @@ export function OrderCard({ sale }: Props) {
         onSuccess: () => {
           queryClient.invalidateQueries();
           toast.success("Status alterado com sucesso");
-          form.reset({ status: data.status }); // ✅ redefine o valor base do form
+          form.reset({ status: data.status });
           setOpen(false);
         },
       },
     );
   };
 
+  const formattedDate = formatDistanceToNow(sale.date, {
+    addSuffix: true,
+    locale: ptBR,
+  });
+
+  const handleViewDetails = () => {
+    refetch();
+    setDetailsOpen(true);
+  };
+
   return (
-    <Dialog>
-      <div className="grid grid-cols-[3fr_4fr_1fr] items-stretch rounded-md border-2 border-primary bg-muted px-5 py-4 shadow-md">
-        <div>
-          <div className="flex flex-1 flex-col justify-center">
-            <span className="text-sm">Pedido N°</span>
-            <span className="max-w-14 text-lg font-bold">{sale.id}</span>
-          </div>
-          <div className="flex flex-col justify-center">
-            <span className="text-sm">Barraca</span>
-            <span className="font-bold">{sale.stall.name}</span>
-          </div>
-        </div>
-        <div className="flex flex-col justify-between">
-          <div className="flex h-12 flex-1 flex-col justify-between">
-            <span>Pedido feito</span>
-            <span className="text-sm font-bold">
-              {formatDistanceToNow(sale.date, {
-                addSuffix: true,
-                locale: ptBR,
-              })}
-            </span>
-          </div>
-          <div className="flex flex-1 flex-col justify-end">
-            <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  disabled={sale.status === "CANCELED"}
-                  className={cn(
-                    colorClasses,
-                    "h-5 w-fit rounded-md px-2 py-1 text-xs font-medium",
-                    {
-                      "pointer-events-none opacity-50":
-                        sale.status === "CANCELED",
-                    },
-                  )}
-                >
-                  {convertStatus(sale.status)}
-                </Button>
-              </DialogTrigger>
+    <>
+      <Card className="overflow-hidden transition-all duration-200 hover:shadow-md sm:w-full md:w-[400px]">
+        <CardContent className="p-0">
+          {/* Status indicator strip */}
+          <div className={cn("h-1.5", colorClasses)} />
 
-              <DialogContent>
-                <DialogTitle>Status do Pedido</DialogTitle>
-                <DialogDescription>
-                  Selecione uma das opções para alterar o status do pedido
-                </DialogDescription>
-                <UpdateOrderStatusForm form={form} onSubmit={onSubmit} />
+          <div className="p-4">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              {/* Order info */}
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5">
+                  <Receipt className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Pedido</span>
+                  <span className="font-bold">#{sale.id}</span>
+                </div>
 
-                {user!.role === "ADMIN" ? (
+                <div className="flex items-center gap-1.5">
+                  <Package className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    Barraca:
+                  </span>
+                  <span className="font-medium">{sale.stall.name}</span>
+                </div>
+              </div>
+
+              {/* Status badge */}
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
                   <Button
-                    disabled={!isStatusChanged}
-                    className="text-background"
-                    onClick={form.handleSubmit(onSubmit)}
+                    variant="ghost"
+                    size="sm"
+                    disabled={sale.status === "CANCELED"}
+                    className={cn(
+                      "h-auto gap-1.5 rounded-full px-3 py-1",
+                      colorClasses,
+                      sale.status === "CANCELED" && "opacity-60",
+                    )}
                   >
-                    Salvar
+                    <span className="relative flex h-2 w-2">
+                      <span
+                        className={cn(
+                          "absolute inline-flex h-full w-full animate-ping rounded-full opacity-75",
+                          sale.status === "PENDING"
+                            ? "bg-amber-400"
+                            : sale.status === "PREPARING"
+                              ? "bg-blue-400"
+                              : sale.status === "DELIVERED"
+                                ? "bg-green-400"
+                                : "bg-red-400",
+                        )}
+                      ></span>
+                      <span
+                        className={cn(
+                          "relative inline-flex h-2 w-2 rounded-full",
+                          sale.status === "PENDING"
+                            ? "bg-amber-500"
+                            : sale.status === "PREPARING"
+                              ? "bg-blue-500"
+                              : sale.status === "DELIVERED"
+                                ? "bg-green-500"
+                                : "bg-red-500",
+                        )}
+                      ></span>
+                    </span>
+                    {convertStatus(sale.status)}
                   </Button>
-                ) : null}
-              </DialogContent>
-            </Dialog>
-          </div>
-        </div>
+                </DialogTrigger>
 
-        <DialogTrigger
-          className="flex h-16 flex-col items-center justify-center gap-1 self-center rounded-md bg-primary px-2"
-          onClick={() => refetch()}
-        >
-          <span className="text-xs text-background">Detalhes</span>
-          <Info className="w-5 text-muted" />
-        </DialogTrigger>
-      </div>
-      <DialogContent>
-        <DialogHeader className="pt-5">
-          <div className="flex justify-between">
-            <div>
-              <span>Barraca: </span>
-              <span className="font-medium text-primary">
-                {sale.stall.name}{" "}
+                <DialogContent>
+                  <DialogTitle>Status do Pedido</DialogTitle>
+                  <DialogDescription>
+                    Selecione uma das opções para alterar o status do pedido
+                  </DialogDescription>
+                  <UpdateOrderStatusForm form={form} onSubmit={onSubmit} />
+
+                  {user?.role === "ADMIN" && (
+                    <Button
+                      disabled={!isStatusChanged || isPending}
+                      className={cn("gap-2", isPending && "opacity-80")}
+                      onClick={form.handleSubmit(onSubmit)}
+                    >
+                      {isPending ? "Processando..." : "Salvar Alterações"}
+                    </Button>
+                  )}
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Separator className="my-3" />
+
+            {/* Time info */}
+            <div className="flex items-center gap-1.5">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">
+                Pedido feito:
+              </span>
+              <span className="text-sm font-medium">{formattedDate}</span>
+              <span className="text-xs text-muted-foreground">
+                ({format(sale.date, "dd/MM/yyyy HH:mm")})
               </span>
             </div>
-            <div>
-              <span className="text-md">Feito às: </span>
-              <span className="font-bold">{format(sale.date, "HH:mm")}</span>
-            </div>
           </div>
-        </DialogHeader>
-        <OrderItemsList
-          items={items || []}
-          numberFormatter={numberFormatter}
-          total={sale.total}
-        />
-      </DialogContent>
-    </Dialog>
+        </CardContent>
+
+        <CardFooter className="flex justify-end border-t bg-muted/30 p-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={handleViewDetails}
+          >
+            <ShoppingBag className="h-4 w-4" />
+            Ver Detalhes
+            <ExternalLink className="h-3 w-3" />
+          </Button>
+        </CardFooter>
+      </Card>
+
+      {/* Order details dialog */}
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="sm:max-w-[550px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <Receipt className="h-5 w-5" />
+              Detalhes do Pedido #{sale.id}
+            </DialogTitle>
+
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 rounded-md border bg-muted/50 p-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5">
+                  <Package className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">
+                    Barraca:
+                  </span>
+                  <span className="font-medium">{sale.stall.name}</span>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Data:</span>
+                  <span className="font-medium">
+                    {format(sale.date, "dd/MM/yyyy")}
+                  </span>
+                </div>
+              </div>
+
+              <Badge variant="outline" className={cn("gap-1.5", colorClasses)}>
+                <span
+                  className={cn(
+                    "h-2 w-2 rounded-full",
+                    sale.status === "PENDING"
+                      ? "bg-amber-500"
+                      : sale.status === "PREPARING"
+                        ? "bg-blue-500"
+                        : sale.status === "DELIVERED"
+                          ? "bg-green-500"
+                          : "bg-red-500",
+                  )}
+                ></span>
+                {convertStatus(sale.status)}
+              </Badge>
+            </div>
+          </DialogHeader>
+
+          <div className="mt-2">
+            <OrderItemsList items={items || []} total={sale.total} />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

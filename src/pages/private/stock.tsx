@@ -37,21 +37,28 @@ export function Stock() {
     placeholderData: keepPreviousData,
   });
 
-  // valor “puro” (em tempo real) do campo de busca
-  const productNameFilter = watch("productName") || "";
+  function normalizeString(str: string): string {
+    return str
+      .normalize("NFD") // separa letras de seus acentos
+      .replace(/[\u0300-\u036f]/g, "") // remove todos os diacríticos
+      .toLowerCase(); // passa pra minúsculo
+  }
 
-  // usa nosso hook para criar a versão “debounced” de productNameFilter
+  // ...
+
+  // Dentro do seu componente:
+  const productNameFilter = watch("productName") || "";
   const debouncedName = useDebouncedValue<string>(productNameFilter, 300);
 
   const filteredProducts = data?.content.filter((product) => {
-    // se debouncedName for string vazia, matchesName = true => inclui tudo
-    const matchesName = debouncedName
-      ? product.name.toLowerCase().includes(debouncedName.toLowerCase())
-      : true;
-
-    // idem para stallIdFilter: se undefined/”“, matchesStall = true => inclui tudo
-
-    return matchesName;
+    // se o usuário digitou algo
+    if (debouncedName) {
+      const name = normalizeString(product.name);
+      const query = normalizeString(debouncedName);
+      return name.includes(query);
+    }
+    // sem filtro, inclui tudo
+    return true;
   });
 
   return (
@@ -59,9 +66,9 @@ export function Stock() {
       <Helmet>
         <title>Estoque</title>
       </Helmet>
-      <section className="mx-auto flex flex-col items-center">
+      {/* <section className="mx-auto flex flex-col items-center">
         <h1 className="text-3xl font-bold text-muted-foreground">Estoque</h1>
-      </section>
+      </section> */}
 
       <section>
         <div className="flex flex-col gap-5">

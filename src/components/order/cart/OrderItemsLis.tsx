@@ -1,40 +1,63 @@
-import { Separator } from "@/components/ui/separator";
-import { OrderItem } from "@/store/SaleStore";
+import type { OrderItem } from "@/store/SaleStore";
+import { numberFormatterToCurrency } from "@/lib/utils";
 
 interface Props {
   items: OrderItem[];
-  numberFormatter: Intl.NumberFormat;
   total: number;
 }
 
-export function OrderItemsList({ items, numberFormatter, total }: Props) {
+export function OrderItemsList({ items, total }: Props) {
   return (
-    <div className="space-y-2 px-4">
-      {items.map((item) => (
-        <>
-          <div key={item.product.id} className="flex justify-between py-2">
-            <div className="flex gap-2">
-              <span>{item.quantity}x</span>
-              <span>{item.product.name}</span>
+    <div className="rounded-md border bg-card">
+      {/* Header */}
+      <div className="grid grid-cols-[auto_1fr_auto] gap-4 bg-muted/50 px-4 py-3 text-sm font-medium text-muted-foreground">
+        <div>Qtd</div>
+        <div>Item</div>
+        <div className="text-right">Preço</div>
+      </div>
+
+      {/* Items */}
+      <div className="divide-y">
+        {items.map((item) => (
+          <div
+            key={item.product.id}
+            className="grid grid-cols-[auto_1fr_auto] gap-4 px-4 py-3"
+          >
+            <div className="flex h-6 min-w-[2rem] items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
+              {item.quantity}
             </div>
-            <div className="flex min-w-[80px] justify-end gap-1">
-              <span className="text-right">R$</span>
-              <span className="font-regular text-serif w-[50px] tabular-nums">
-                {numberFormatter
-                  .format(item.product.price)
-                  .replace("R$", "")
-                  .trim()}
-              </span>
+            <div className="flex items-center">
+              <span className="line-clamp-1">{item.product.name}</span>
+            </div>
+            <div className="flex items-center justify-end text-right font-medium tabular-nums">
+              {numberFormatterToCurrency.format(
+                item.product.price * item.quantity,
+              )}
             </div>
           </div>
-          <Separator />
-        </>
-      ))}
-      <div className="mt-3 flex justify-between">
-        <span className="font-bold">Total: {""} </span>
-        <span className="text-xl font-bold text-primary">
-          {numberFormatter.format(total)}
-        </span>
+        ))}
+      </div>
+
+      {/* Summary */}
+      <div className="space-y-2 bg-muted/30 px-4 py-3">
+        {/* Subtotal */}
+        {/* <div className="flex justify-between text-sm">
+          <span className="text-muted-foreground">Subtotal</span>
+          <span className="font-medium tabular-nums">
+            {numberFormatterToCurrency.format(total)}
+          </span>
+        </div> */}
+
+        {/* Separator */}
+        {/* <Separator /> */}
+
+        {/* Total */}
+        <div className="flex justify-between pt-1">
+          <span className="font-medium">Total</span>
+          <span className="text-lg font-bold tabular-nums text-primary">
+            {numberFormatterToCurrency.format(total)}
+          </span>
+        </div>
       </div>
     </div>
   );

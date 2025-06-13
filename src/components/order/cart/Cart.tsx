@@ -85,20 +85,10 @@ export function Cart() {
 
   if (items.length === 0) return null;
 
-  const numberFormatter = new Intl.NumberFormat("pt-BR", {
-    currency: "BRL",
-    style: "currency",
-  });
-
   return isMobile ? (
     // --- MOBILE (Drawer) ---
     <Drawer open={open} onOpenChange={setOpen}>
-      <OrderSummaryBar
-        items={items}
-        numberFormatter={numberFormatter}
-        setOpen={setOpen}
-        total={total}
-      />
+      <OrderSummaryBar items={items} setOpen={setOpen} total={total} />
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>
@@ -106,11 +96,7 @@ export function Cart() {
           </DrawerTitle>
           <DrawerDescription>Resumo da venda</DrawerDescription>
         </DrawerHeader>
-        <OrderItemsList
-          items={items}
-          numberFormatter={numberFormatter}
-          total={total}
-        />
+        <OrderItemsList items={items} total={total} />
 
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
@@ -130,12 +116,7 @@ export function Cart() {
   ) : (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTitle>
-        <OrderSummaryBar
-          items={items}
-          numberFormatter={numberFormatter}
-          setOpen={setOpen}
-          total={total}
-        />
+        <OrderSummaryBar items={items} setOpen={setOpen} total={total} />
       </DialogTitle>
 
       <DialogContent className="sm:max-w-[425px]">
@@ -145,11 +126,7 @@ export function Cart() {
           </DialogTitle>
           <DialogDescription>Resumo da venda</DialogDescription>
         </DialogHeader>
-        <OrderItemsList
-          items={items}
-          numberFormatter={numberFormatter}
-          total={total}
-        />
+        <OrderItemsList items={items} total={total} />
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Cancelar</Button>

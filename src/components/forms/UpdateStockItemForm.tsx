@@ -96,7 +96,9 @@ export function UpdateStockItemForm({ form }: Props) {
             name="criticalStock"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nível crítico de estoque</FormLabel>
+                <FormLabel className="truncate">
+                  Nível crítico de estoque
+                </FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
                 </FormControl>
@@ -138,7 +140,7 @@ export function UpdateStockItemForm({ form }: Props) {
         </div>
 
         {/* Stock settings section */}
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className=" ">
           {/* Stall selection for admin users */}
           {user?.role === "ADMIN" && (
             <FormField

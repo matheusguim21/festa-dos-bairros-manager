@@ -66,22 +66,23 @@ export default function Vendas() {
   return (
     <main className="overflow-auto">
       <div className="border-3 px-3 py-5">
-        <Helmet title="Vendas" />
+        <Helmet title="Pedidos" />
         {data && (
           <>
             <div className="flex w-full flex-wrap gap-5">
               <span className="right-0 w-full truncate text-end">
-                Total de {data.totalElements} vendas
+                Total de {data.totalElements} Pedidos
               </span>
-              {data.content.map((sale) => (
-                <OrderCard key={sale.id} sale={sale} />
-              ))}
+              <div className="flex flex-wrap gap-3">
+                {data.content.map((sale) => (
+                  <OrderCard key={sale.id} sale={sale} />
+                ))}
+              </div>
               <div className="flex w-full items-end justify-between">
                 <PageSelector value={limit} handleChange={setLimit} />
                 <Pagination
                   onPageChange={handlePaginate}
                   pageCount={data.totalPages}
-                  totalCount={data.totalElements}
                   pageIndex={data.page}
                 />
               </div>
