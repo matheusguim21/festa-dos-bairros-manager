@@ -73,7 +73,7 @@ export function Stock() {
 
       <section>
         <div className="flex flex-col gap-5">
-          <div className="flex flex-col justify-between md:flex-row">
+          <div className="flex flex-col justify-between gap-2 md:flex-row">
             <StockFilters control={control} />
             {!isMobile && <AddProductModal />}
           </div>
