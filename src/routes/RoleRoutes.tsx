@@ -87,7 +87,13 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
       element: <Vendas />,
       icon: <ScrollText size={20} />,
     },
-    { path: "estoque", label: "Estoque", element: <Stock /> },
+
+    {
+      path: "estoque",
+      label: "Estoque",
+      element: <Stock />,
+      icon: <Box size={20} />,
+    },
     {
       path: "caixa",
       element: <CashierPage />,

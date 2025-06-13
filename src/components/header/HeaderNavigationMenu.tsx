@@ -5,17 +5,19 @@ import {
   NavigationMenuList,
 } from "@radix-ui/react-navigation-menu";
 import { NavLink } from "./nav-link";
+import { Drawer, DrawerContent, DrawerOverlay } from "../ui/drawer"; // implemente um Drawer simples com Radix ou Tailwind
+import { useAuth } from "@/contexts/Auth.context";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Menu, X, LogOut } from "lucide-react";
+import { ReactNode, useState } from "react";
+import { RoleRoute, roleRoutes } from "@/routes/RoleRoutes";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useAuth } from "@/contexts/Auth.context";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { LogOut } from "lucide-react";
-import { ReactNode, useState } from "react";
-import { RoleRoute, roleRoutes } from "@/routes/RoleRoutes";
+import { Button } from "../ui/button";
 
 export function HeaderNavigationMenu() {
   const { user, signOut } = useAuth();
@@ -23,54 +25,69 @@ export function HeaderNavigationMenu() {
   const [open, setOpen] = useState(false);
   if (!user) return null;
 
-  // Pega só as rotas que têm label e icon (menu) para o role atual
   const items = roleRoutes[user.role].filter(
     (r): r is RoleRoute & { label: string; icon: ReactNode } =>
       Boolean(r.label && r.icon),
   );
 
   return (
-    <NavigationMenu>
-      <NavigationMenuList className="flex items-center gap-5 p-5">
-        {isMobile ? (
-          <NavigationMenuItem>
-            <DropdownMenu open={open}>
-              <DropdownMenuTrigger
-                className="flex items-center gap-2 rounded-md border bg-muted px-3 py-2"
-                onClick={() => setOpen(true)}
-              >
-                {user.name}
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
+    <header className="flex items-center justify-between py-2">
+      {isMobile ? (
+        <div>
+          <Menu
+            onClick={() => setOpen(true)}
+            aria-label="Abrir menu"
+            className="h-full w-full rounded-md p-2 text-background shadow-lg"
+            size={30}
+          />
+
+          <Drawer open={open} onOpenChange={setOpen}>
+            <DrawerOverlay />
+            <DrawerContent className="bg-white p-4">
+              <div className="flex justify-end">
+                <Button
+                  variant={"ghost"}
+                  onClick={() => setOpen(false)}
+                  aria-label="Fechar menu"
+                  className="rounded-md p-2 hover:bg-muted"
+                >
+                  <X size={24} />
+                </Button>
+              </div>
+
+              <nav className="mt-4 flex flex-col gap-4">
                 {items.map(({ path, index, label, icon }) => {
                   const to = index ? "/" : `/${path}`;
                   return (
-                    <DropdownMenuItem className="min-w-24" key={to}>
-                      <NavigationMenuLink asChild className="flex">
-                        <NavLink
-                          className="border border-red-500"
-                          to={to}
-                          onClick={() => setOpen(false)}
-                        >
-                          {icon}
-                          <span>{label}</span>
-                        </NavLink>
-                      </NavigationMenuLink>
-                    </DropdownMenuItem>
+                    <NavLink
+                      key={to}
+                      to={to}
+                      className="flex items-center gap-2 rounded-md p-2 hover:bg-muted"
+                      onClick={() => setOpen(false)}
+                    >
+                      {icon}
+                      {label}
+                    </NavLink>
                   );
                 })}
-                <DropdownMenuItem
-                  onClick={signOut}
-                  className="flex items-center gap-2"
+
+                <Button
+                  onClick={() => {
+                    signOut();
+                    setOpen(false);
+                  }}
+                  className="flex items-center gap-2 rounded-md p-2 text-background hover:bg-muted"
                 >
                   <LogOut size={20} />
-                  <span>Sair</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </NavigationMenuItem>
-        ) : (
-          <>
+                  Sair
+                </Button>
+              </nav>
+            </DrawerContent>
+          </Drawer>
+        </div>
+      ) : (
+        <NavigationMenu>
+          <NavigationMenuList className="flex items-center gap-5">
             {items.map(({ path, index, label, icon }) => {
               const to = index ? "/" : `/${path}`;
               return (
@@ -87,6 +104,7 @@ export function HeaderNavigationMenu() {
                 </NavigationMenuItem>
               );
             })}
+
             <NavigationMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger className="rounded-md border bg-muted px-3 py-2">
@@ -103,9 +121,9 @@ export function HeaderNavigationMenu() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </NavigationMenuItem>
-          </>
-        )}
-      </NavigationMenuList>
-    </NavigationMenu>
+          </NavigationMenuList>
+        </NavigationMenu>
+      )}
+    </header>
   );
 }

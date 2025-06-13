@@ -16,7 +16,7 @@ export default function StallOrder() {
   });
 
   return (
-    <div className="flex h-screen flex-col items-center gap-3 overflow-auto px-5 py-5 pb-32">
+    <div className="flex flex-col items-center gap-3 overflow-auto px-5 py-5">
       <Helmet title="Ínicio" />
       {/* padding bottom para não cobrir os cards */}
       <h1 className="text-2xl font-bold">Venda</h1>

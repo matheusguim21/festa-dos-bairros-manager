@@ -64,12 +64,15 @@ export default function Vendas() {
   // }, []);
 
   return (
-    <main className="pb-50 h-screen overflow-auto">
-      <div className="px-3 py-5 pb-24">
+    <main className="overflow-auto">
+      <div className="border-3 px-3 py-5">
         <Helmet title="Vendas" />
         {data && (
           <>
-            <div className="flex flex-wrap gap-5">
+            <div className="flex w-full flex-wrap gap-5">
+              <span className="right-0 w-full truncate text-end">
+                Total de {data.totalElements} vendas
+              </span>
               {data.content.map((sale) => (
                 <OrderCard key={sale.id} sale={sale} />
               ))}
