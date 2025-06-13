@@ -107,12 +107,12 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
       label: "Relatórios",
       icon: <ChartNoAxesCombined size={20} />,
     },
-    // {
-    //   path: "caixa",
-    //   element: <CashierPage />,
-    //   label: "Caixa",
-    //   icon: <Computer size={20} />,
-    // },
+    {
+      path: "caixa",
+      element: <CashierPage />,
+      label: "Caixa",
+      icon: <Computer size={20} />,
+    },
   ],
   [Role.CASHIER]: [
     {
