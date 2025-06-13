@@ -11,6 +11,7 @@ import { z } from "zod";
 import { StockProductsCard } from "@/components/cards/StockProductsCard";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { cn } from "@/lib/utils";
+import { AddProductModal } from "@/components/modals/AddProductModal";
 
 const SearchStockItemSchema = z.object({
   productName: z.string(),
@@ -74,9 +75,9 @@ export function Stock() {
         <div className="flex flex-col gap-5">
           <div className="flex flex-col justify-between md:flex-row">
             <StockFilters control={control} />
-            {/* {!isMobile && <AddProductModal />} */}
+            {!isMobile && <AddProductModal />}
           </div>
-          {/* {isMobile && <AddProductModal />} */}
+          {isMobile && <AddProductModal />}
         </div>
       </section>
       <section

@@ -36,6 +36,7 @@ const AddProductSchema = z.object({
   stallId: z.number({
     message: "A barraca é obrigatória",
   }),
+  criticalStock: z.coerce.number().min(1, "O valor deve ser maior que 0"),
 
   // productImage: z
   //   .instanceof(File, {
@@ -68,6 +69,7 @@ export function AddProductForm({ handleCloseModal }: Props) {
       productAmount: 1,
       price: 0,
       productName: "",
+      criticalStock: 0,
     },
   });
   const queryClient = useQueryClient();
@@ -171,6 +173,24 @@ export function AddProductForm({ handleCloseModal }: Props) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Quantidade</FormLabel>
+              <FormControl>
+                <Input
+                  className="w-24"
+                  type="number"
+                  {...field}
+                  // className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="criticalStock"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Estoque Ctítico</FormLabel>
               <FormControl>
                 <Input
                   className="w-24"
