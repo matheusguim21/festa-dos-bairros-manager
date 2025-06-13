@@ -18,8 +18,8 @@ type GetAllOrderItemsByOrderIdResponse = {
 };
 interface GetAllOrdersRequest {
   search?: string;
-  page?: number;
-  limit?: number;
+  page?: string;
+  limit?: string;
 }
 
 export const ordersService = {

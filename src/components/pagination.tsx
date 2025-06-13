@@ -52,7 +52,7 @@ export function Pagination({
   }
 
   return (
-    <ShadPagination className="w-full justify-between">
+    <ShadPagination className="flex w-full items-center justify-end">
       <span>Total de {totalCount} items </span>
       <PaginationContent>
         <PaginationItem>

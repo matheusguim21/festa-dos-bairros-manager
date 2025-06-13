@@ -3,28 +3,90 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Helmet } from "@dr.pogodin/react-helmet";
 import { OrderCard } from "@/components/order/OrderCard";
 import { ordersService } from "@/api/orders.service";
+import { useSearchParams } from "react-router";
+import { useEffect, useState } from "react";
+import { Pagination } from "@/components/pagination";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PageSelector } from "@/components/filters/PageSelector";
+
+const searchOrdersSchema = z.object({
+  search: z.string().optional(),
+  limit: z.string(),
+});
+
+export type SearchOrdersFormData = z.infer<typeof searchOrdersSchema>;
 
 export default function Vendas() {
   const { user } = useAuth();
+  // const [searchParams, setSearchParams] = useSearchParams();
+  const [limit, setLimit] = useState("5");
+  const [page, setPage] = useState("1");
 
   const { data } = useQuery({
-    queryKey: ["sales"],
+    queryKey: ["sales", page, limit],
     queryFn: () =>
       user?.role === "ADMIN"
-        ? ordersService.getAllOrders()
-        : ordersService.getAllOrdersByStall(user!.stall.id),
+        ? ordersService.getAllOrders({
+            limit,
+            page: page ?? "1",
+          })
+        : ordersService.getAllOrdersByStall(user!.stall.id, {
+            limit,
+            page: page ?? "1",
+          }),
     enabled: true,
     placeholderData: keepPreviousData,
   });
 
+  function handlePaginate(newPageIndex: number) {
+    setPage((newPageIndex + 1).toString());
+  }
+
+  // const handleSearch = (formData: SearchOrdersFormData) => {
+  //   setSearchParams((state) => {
+  //     state.set("search", formData.search ?? "");
+  //     state.set("page", "1");
+  //     return state;
+  //   });
+  // };
+
+  useEffect(() => {
+    if (limit) {
+      setPage("1");
+    }
+  }, [limit]);
+
+  // useEffect(() => {
+  //   setSearchParams((state) => {
+  //     state.set("search", search );
+  //     return state;
+  //   });
+  // }, []);
+
   return (
-    <main className="h-screen overflow-auto pb-24">
+    <main className="pb-50 h-screen overflow-auto">
       <div className="px-3 py-5 pb-24">
         <Helmet title="Vendas" />
-        {/* padding bottom para não cobrir os cards */}
-        <div className="flex flex-wrap gap-5">
-          {data?.content.map((sale) => <OrderCard key={sale.id} sale={sale} />)}
-        </div>
+        {data && (
+          <>
+            <div className="flex flex-wrap gap-5">
+              {data.content.map((sale) => (
+                <OrderCard key={sale.id} sale={sale} />
+              ))}
+              <div className="flex w-full items-end justify-between">
+                <PageSelector value={limit} handleChange={setLimit} />
+                <Pagination
+                  onPageChange={handlePaginate}
+                  pageCount={data.totalPages}
+                  totalCount={data.totalElements}
+                  pageIndex={data.page}
+                />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </main>
   );
