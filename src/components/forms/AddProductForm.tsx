@@ -111,7 +111,7 @@ export function AddProductForm({ handleCloseModal }: Props) {
 
   return (
     <Form {...form}>
-      <div className="flex justify-start gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <FormField
           control={form.control}
           name="productName"
@@ -139,12 +139,12 @@ export function AddProductForm({ handleCloseModal }: Props) {
           )}
         />
       </div>
-      <div className="flex flex-row gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <FormField
           control={form.control}
           name="stallId"
           render={({ field }) => (
-            <FormItem className="min-w-52">
+            <FormItem className="">
               <FormLabel>Barraca</FormLabel>
               <Select
                 onValueChange={(val) => field.onChange(Number(val))}
@@ -175,7 +175,7 @@ export function AddProductForm({ handleCloseModal }: Props) {
               <FormLabel>Quantidade</FormLabel>
               <FormControl>
                 <Input
-                  className="w-24"
+                  className="w-full"
                   type="number"
                   {...field}
                   // className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -185,24 +185,7 @@ export function AddProductForm({ handleCloseModal }: Props) {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="criticalStock"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Estoque Ctítico</FormLabel>
-              <FormControl>
-                <Input
-                  className="w-24"
-                  type="number"
-                  {...field}
-                  // className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         {/* <FormField
           control={form.control}
           name="productImage"
@@ -226,6 +209,26 @@ export function AddProductForm({ handleCloseModal }: Props) {
             </FormItem>
           )}
         /> */}
+      </div>
+      <div>
+        <FormField
+          control={form.control}
+          name="criticalStock"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Estoque Ctítico</FormLabel>
+              <FormControl>
+                <Input
+                  className="w-full"
+                  type="number"
+                  {...field}
+                  // className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
       <Button
         className="text-background"
