@@ -7,7 +7,9 @@ import {
 } from "../ui/select";
 
 interface Props {
-  handleChange: React.Dispatch<React.SetStateAction<string>>;
+  handleChange: (
+    value: string,
+  ) => void | React.Dispatch<React.SetStateAction<string>>;
   value: string;
 }
 

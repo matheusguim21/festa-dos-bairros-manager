@@ -2,9 +2,16 @@ import CashierPage from "@/pages/private/cashier/CashierPage";
 import Vendas from "@/pages/private/orders/orders-history";
 import OrdersToPrepare from "@/pages/private/orders/OrdersToPrepare";
 import StallOrder from "@/pages/private/orders/stall-order";
+import ReportsPage from "@/pages/private/relatorios/Page";
 import { Stock } from "@/pages/private/stock";
 import { Role } from "@/types/Role";
-import { Store, ScrollText, Computer, Box } from "lucide-react";
+import {
+  Store,
+  ScrollText,
+  Computer,
+  Box,
+  ChartNoAxesCombined,
+} from "lucide-react";
 import { ReactNode } from "react";
 import { RouteObject } from "react-router";
 
@@ -93,6 +100,12 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
       label: "Estoque Geral",
       element: <Stock />,
       icon: <Box size={20} />,
+    },
+    {
+      path: "relatorios",
+      element: <ReportsPage />,
+      label: "Relatórios",
+      icon: <ChartNoAxesCombined size={20} />,
     },
     // {
     //   path: "caixa",
