@@ -32,13 +32,7 @@ import { useAuth } from "@/contexts/Auth.context";
 import { QuantityInput } from "../inputs/QuantityInpur";
 import { CriticalStockInput } from "../inputs/CriticalStockinput";
 import type { Product } from "@/types/Product";
-import {
-  Package,
-  AlertTriangle,
-  TrendingUp,
-  TrendingDown,
-  Info,
-} from "lucide-react";
+import { Package, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -135,140 +129,268 @@ export function UpdateStockItemForm({ form, product }: Props) {
     const NewIcon = stockInfo.newStatus.icon;
 
     return (
-      <Form {...form}>
-        <form className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                {operation === Operation.IN ? (
-                  <>
-                    <TrendingUp className="h-5 w-5 text-green-600" />
-                    Entrada de Estoque
-                  </>
-                ) : (
-                  <>
-                    <TrendingDown className="h-5 w-5 text-red-600" />
-                    Saída de Estoque
-                  </>
+      <div className="space-y-3 p-3">
+        <Form {...form}>
+          <form className="space-y-3">
+            {/* Current Stock Display - Compacto */}
+            <div
+              className={cn(
+                "rounded-lg border-l-4 p-3",
+                stockInfo.currentStatus.bgColor,
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <CurrentIcon
+                    className={cn("h-4 w-4", stockInfo.currentStatus.color)}
+                  />
+                  <span className="text-sm font-medium">Atual:</span>
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-xs font-bold",
+                      stockInfo.currentStatus.color,
+                    )}
+                  >
+                    {stockInfo.current}
+                  </Badge>
+                </div>
+                <Badge variant="secondary" className="text-xs">
+                  {stockInfo.currentStatus.label}
+                </Badge>
+              </div>
+            </div>
+
+            {/* Quantity Input */}
+            <FormField
+              control={form.control}
+              name="operationQuantity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Quantidade{" "}
+                    {operation === Operation.IN ? "de entrada" : "de saída"}
+                  </FormLabel>
+                  <FormControl>
+                    <QuantityInput
+                      value={field.value || 0}
+                      onChange={field.onChange}
+                      min={1}
+                      max={
+                        operation === Operation.OUT ? stockInfo.current : 1000
+                      }
+                      variant={
+                        operation === Operation.IN ? "success" : "destructive"
+                      }
+                      size="sm"
+                      placeholder="Digite a quantidade"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Stock Preview - Compacto */}
+            {operationQuantity > 0 && (
+              <div
+                className={cn(
+                  "rounded-lg border-l-4 p-3",
+                  stockInfo.newStatus.bgColor,
                 )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Current Stock Display */}
-              <Alert
-                className={cn("border-l-4", stockInfo.currentStatus.bgColor)}
               >
-                <Info className="h-4 w-4" />
-                <AlertDescription>
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <CurrentIcon
-                        className={cn("h-4 w-4", stockInfo.currentStatus.color)}
+                      <NewIcon
+                        className={cn("h-4 w-4", stockInfo.newStatus.color)}
                       />
-                      <span className="font-medium">Estoque atual:</span>
+                      <span className="text-sm font-medium">Após:</span>
                       <Badge
                         variant="outline"
                         className={cn(
-                          "font-bold",
-                          stockInfo.currentStatus.color,
+                          "text-xs font-bold",
+                          stockInfo.newStatus.color,
                         )}
                       >
-                        {stockInfo.current} unidades
-                      </Badge>
-                      <Badge variant="secondary" className="text-xs">
-                        {stockInfo.currentStatus.label}
+                        {stockInfo.new}
                       </Badge>
                     </div>
+                    <Badge variant="secondary" className="text-xs">
+                      {stockInfo.newStatus.label}
+                    </Badge>
                   </div>
-                </AlertDescription>
-              </Alert>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">
+                      Alteração:
+                    </span>
+                    <Badge
+                      variant={
+                        stockInfo.difference > 0 ? "default" : "destructive"
+                      }
+                      className="text-xs"
+                    >
+                      {stockInfo.difference > 0 ? "+" : ""}
+                      {stockInfo.difference}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            )}
 
-              {/* Quantity Input */}
+            {/* Warning for OUT operations */}
+            {operation === Operation.OUT &&
+              operationQuantity > stockInfo.current && (
+                <Alert variant="destructive" className="p-3">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription className="text-xs">
+                    Quantidade maior que estoque atual. Estoque ficará zerado.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+            {/* Stall selection for admin users */}
+            {user?.role === "ADMIN" && (
               <FormField
                 control={form.control}
-                name="operationQuantity"
+                name="stallId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-medium">
-                      Quantidade{" "}
-                      {operation === Operation.IN ? "de entrada" : "de saída"}
+                    <FormLabel className="text-sm font-medium">
+                      Barraca
                     </FormLabel>
                     <FormControl>
-                      <QuantityInput
-                        value={field.value || 0}
-                        onChange={field.onChange}
-                        min={1}
-                        max={
-                          operation === Operation.OUT ? stockInfo.current : 1000
-                        }
-                        variant={
-                          operation === Operation.IN ? "success" : "destructive"
-                        }
-                        size="md"
-                        placeholder="Digite a quantidade"
-                      />
+                      <Select
+                        onValueChange={field.onChange}
+                        value={String(field.value)}
+                      >
+                        <SelectTrigger className="h-9 text-sm">
+                          <SelectValue placeholder="Selecione a Barraca" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {options.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+            )}
+          </form>
+        </Form>
+      </div>
+    );
+  }
 
-              {/* Stock Preview */}
-              {operationQuantity > 0 && (
-                <Alert
-                  className={cn("border-l-4", stockInfo.newStatus.bgColor)}
+  // Full form for other operations (NOONE or product updates) - Mais compacto
+  return (
+    <div className="space-y-3 p-3">
+      <Form {...form}>
+        <form className="space-y-3">
+          {/* Current Stock Info - Compacto */}
+          <div
+            className={cn(
+              "rounded-lg border-l-4 p-3",
+              stockInfo.currentStatus.bgColor,
+            )}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Package className="h-4 w-4" />
+                <span className="text-sm font-medium">Estoque:</span>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "text-xs font-bold",
+                    stockInfo.currentStatus.color,
+                  )}
                 >
-                  <NewIcon className="h-4 w-4" />
-                  <AlertDescription>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium">
-                          Estoque após operação:
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            variant="outline"
-                            className={cn(
-                              "font-bold",
-                              stockInfo.newStatus.color,
-                            )}
-                          >
-                            {stockInfo.new} unidades
-                          </Badge>
-                          <Badge variant="secondary" className="text-xs">
-                            {stockInfo.newStatus.label}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span>Alteração:</span>
-                        <Badge
-                          variant={
-                            stockInfo.difference > 0 ? "default" : "destructive"
-                          }
-                          className="text-xs"
-                        >
-                          {stockInfo.difference > 0 ? "+" : ""}
-                          {stockInfo.difference}
-                        </Badge>
-                      </div>
-                    </div>
-                  </AlertDescription>
-                </Alert>
-              )}
+                  {stockInfo.current}
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  {stockInfo.currentStatus.label}
+                </Badge>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Crítico: {stockInfo.criticalStock}
+              </div>
+            </div>
+          </div>
 
-              {/* Warning for OUT operations */}
-              {operation === Operation.OUT &&
-                operationQuantity > stockInfo.current && (
-                  <Alert variant="destructive">
-                    <AlertTriangle className="h-4 w-4" />
-                    <AlertDescription>
-                      Quantidade de saída ({operationQuantity}) é maior que o
-                      estoque atual ({stockInfo.current}). O estoque ficará
-                      zerado.
-                    </AlertDescription>
-                  </Alert>
+          {/* Product details section - Compacto */}
+          <Card className="border-0 shadow-none">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-base">Detalhes do Produto</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 p-3 pt-0">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="productName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium">
+                        Nome
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Digite o nome do produto"
+                          className="h-9 text-sm"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="productPrice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium">
+                        Preço
+                      </FormLabel>
+                      <FormControl>
+                        <PriceInput field={field} className="h-9" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Stock settings section - Compacto */}
+          <Card className="border-0 shadow-none">
+            <CardHeader className="p-3 pb-2">
+              <CardTitle className="text-base">
+                Configurações de Estoque
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 p-3 pt-0">
+              <FormField
+                control={form.control}
+                name="criticalStock"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">
+                      Nível crítico de estoque
+                    </FormLabel>
+                    <FormControl>
+                      <CriticalStockInput field={field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
+              />
 
               {/* Stall selection for admin users */}
               {user?.role === "ADMIN" && (
@@ -277,7 +399,7 @@ export function UpdateStockItemForm({ form, product }: Props) {
                   name="stallId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-base font-medium">
+                      <FormLabel className="text-sm font-medium">
                         Barraca
                       </FormLabel>
                       <FormControl>
@@ -285,7 +407,7 @@ export function UpdateStockItemForm({ form, product }: Props) {
                           onValueChange={field.onChange}
                           value={String(field.value)}
                         >
-                          <SelectTrigger className="h-11 text-base">
+                          <SelectTrigger className="h-9 text-sm">
                             <SelectValue placeholder="Selecione a Barraca" />
                           </SelectTrigger>
                           <SelectContent>
@@ -309,140 +431,6 @@ export function UpdateStockItemForm({ form, product }: Props) {
           </Card>
         </form>
       </Form>
-    );
-  }
-
-  // Full form for other operations (NOONE or product updates)
-  return (
-    <Form {...form}>
-      <form className="space-y-6">
-        {/* Current Stock Info */}
-        <Alert className={cn("border-l-4", stockInfo.currentStatus.bgColor)}>
-          <Package className="h-4 w-4" />
-          <AlertDescription>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="font-medium">Estoque atual:</span>
-                <Badge
-                  variant="outline"
-                  className={cn("font-bold", stockInfo.currentStatus.color)}
-                >
-                  {stockInfo.current} unidades
-                </Badge>
-                <Badge variant="secondary" className="text-xs">
-                  {stockInfo.currentStatus.label}
-                </Badge>
-              </div>
-              <div className="text-xs text-muted-foreground">
-                Crítico: {stockInfo.criticalStock} unidades
-              </div>
-            </div>
-          </AlertDescription>
-        </Alert>
-
-        {/* Product details section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Detalhes do Produto</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col justify-end space-y-4">
-            <div className="grid items-end gap-4 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="productName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium">
-                      Nome
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Digite o nome do produto"
-                        className="h-11 text-base"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="productPrice"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium">
-                      Preço
-                    </FormLabel>
-                    <FormControl>
-                      <PriceInput field={field} className="h-11" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stock settings section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Configurações de Estoque</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <FormField
-              control={form.control}
-              name="criticalStock"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-base font-medium">
-                    Nível crítico de estoque
-                  </FormLabel>
-                  <FormControl>
-                    <CriticalStockInput field={field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Stall selection for admin users */}
-            {user?.role === "ADMIN" && (
-              <FormField
-                control={form.control}
-                name="stallId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium">
-                      Barraca
-                    </FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={String(field.value)}
-                      >
-                        <SelectTrigger className="h-11 text-base">
-                          <SelectValue placeholder="Selecione a Barraca" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {options.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-          </CardContent>
-        </Card>
-      </form>
-    </Form>
+    </div>
   );
 }

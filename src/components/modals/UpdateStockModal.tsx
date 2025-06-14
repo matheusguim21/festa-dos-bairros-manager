@@ -62,7 +62,6 @@ export function UpdateStockModal({ product }: Props) {
     mutationFn: productsService.updateProduct,
     onSuccess: () => {
       setOpen(false);
-      // Invalidate specific queries to ensure fresh data
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["stalls"] });
       toast.success("Produto atualizado com sucesso");
@@ -78,7 +77,6 @@ export function UpdateStockModal({ product }: Props) {
     if (!open) return;
 
     const handleResize = () => {
-      // Detect if keyboard is visible on mobile
       const isKeyboardVisible = window.visualViewport
         ? window.visualViewport.height < window.innerHeight * 0.75
         : false;
@@ -89,7 +87,6 @@ export function UpdateStockModal({ product }: Props) {
     const handleFocus = (e: FocusEvent) => {
       const target = e.target as HTMLElement;
       if (target.tagName === "INPUT" || target.tagName === "SELECT") {
-        // Small delay to ensure keyboard is shown
         setTimeout(() => {
           target.scrollIntoView({
             behavior: "smooth",
@@ -100,7 +97,6 @@ export function UpdateStockModal({ product }: Props) {
       }
     };
 
-    // Add event listeners
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", handleResize);
     } else {
@@ -145,7 +141,6 @@ export function UpdateStockModal({ product }: Props) {
 
   useEffect(() => {
     if (open) {
-      // Reset form with current product values when modal opens
       form.reset({
         operation: Operation.NOONE,
         productId: product.id,
@@ -160,7 +155,6 @@ export function UpdateStockModal({ product }: Props) {
 
   useEffect(() => {
     if (!open) {
-      // Reset form when modal closes
       setTimeout(() => {
         form.reset({
           operation: Operation.NOONE,
@@ -191,103 +185,113 @@ export function UpdateStockModal({ product }: Props) {
 
       <DialogContent
         className={cn(
-          "p-3 transition-all duration-300 xs:w-[97%]",
-          // Adjust modal height when keyboard is visible
-          keyboardVisible
-            ? "max-h-[50vh] sm:max-h-[70vh]"
-            : "max-h-[90vh] sm:max-h-[85vh]",
+          "w-full max-w-[95vw] gap-0 p-0 sm:max-w-[600px]",
+          // Altura dinâmica baseada no viewport
+          "max-h-[95vh] sm:max-h-[90vh]",
+          keyboardVisible && "max-h-[60vh]",
         )}
       >
+        {/* Header fixo */}
+        <DialogHeader className="border-b p-4 pb-2">
+          <DialogTitle className="flex items-center gap-2 text-lg">
+            <Package2 className="h-5 w-5" />
+            Gerenciamento de Produto
+          </DialogTitle>
+          <DialogDescription className="text-sm">
+            Atualize informações ou estoque de{" "}
+            <span className="font-medium text-foreground">{product.name}</span>
+          </DialogDescription>
+        </DialogHeader>
+
+        {/* Área de scroll com o conteúdo */}
         <ScrollArea
           ref={scrollAreaRef}
           className={cn(
-            "w-full transition-all duration-300",
-            keyboardVisible ? "h-[40vh]" : "h-auto",
+            "flex-1 px-4",
+            keyboardVisible ? "max-h-[35vh]" : "max-h-[65vh] sm:max-h-[60vh]",
           )}
         >
-          <DialogHeader className="pb-4">
-            <DialogTitle className="flex items-center gap-2 text-xl">
-              <Package2 className="h-5 w-5" />
-              Gerenciamento de Produto
-            </DialogTitle>
-            <DialogDescription className="pt-2 text-base">
-              Atualize informações ou estoque de{" "}
-              <span className="font-medium text-foreground">
-                {product.name}
-              </span>
-            </DialogDescription>
-          </DialogHeader>
+          <div className="py-2">
+            {/* Operation selection buttons */}
+            <div className="mb-4 grid grid-cols-3 gap-2">
+              <Button
+                type="button"
+                variant={operation === Operation.NOONE ? "default" : "outline"}
+                size="sm"
+                className={cn(
+                  "gap-1 text-xs transition-all sm:text-sm",
+                  operation === Operation.NOONE &&
+                    "bg-blue-600 text-background hover:bg-blue-700",
+                )}
+                onClick={() => form.setValue("operation", Operation.NOONE)}
+              >
+                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                Editar
+              </Button>
+              <Button
+                type="button"
+                variant={operation === Operation.IN ? "default" : "outline"}
+                size="sm"
+                className={cn(
+                  "gap-1 text-xs transition-all sm:text-sm",
+                  operation === Operation.IN &&
+                    "bg-green-600 text-background hover:bg-green-700",
+                )}
+                onClick={() => form.setValue("operation", Operation.IN)}
+              >
+                <ArrowUpCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                Entrada
+              </Button>
 
-          {/* Operation selection buttons */}
-          <div className="mb-4 mt-2 grid grid-cols-3 gap-2">
-            <Button
-              type="button"
-              variant={operation === Operation.NOONE ? "default" : "outline"}
+              <Button
+                type="button"
+                variant={operation === Operation.OUT ? "default" : "outline"}
+                size="sm"
+                className={cn(
+                  "gap-1 text-xs transition-all sm:text-sm",
+                  operation === Operation.OUT &&
+                    "bg-red-600 text-background hover:bg-red-700",
+                )}
+                onClick={() => form.setValue("operation", Operation.OUT)}
+              >
+                <ArrowDownCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                Saída
+              </Button>
+            </div>
+
+            {/* Form container */}
+            <div
               className={cn(
-                "gap-1 transition-all",
-                operation === Operation.NOONE &&
-                  "bg-blue-600 text-background hover:bg-blue-700",
-              )}
-              onClick={() => form.setValue("operation", Operation.NOONE)}
-            >
-              <Edit className="h-4 w-4" />
-              Editar
-            </Button>
-            <Button
-              type="button"
-              variant={operation === Operation.IN ? "default" : "outline"}
-              className={cn(
-                "gap-1 transition-all",
+                "w-full rounded-lg transition-all",
                 operation === Operation.IN &&
-                  "bg-green-600 text-background hover:bg-green-700",
-              )}
-              onClick={() => form.setValue("operation", Operation.IN)}
-            >
-              <ArrowUpCircle className="h-4 w-4" />
-              Entrada
-            </Button>
-
-            <Button
-              type="button"
-              variant={operation === Operation.OUT ? "default" : "outline"}
-              className={cn(
-                "gap-1 transition-all",
+                  "border border-green-200 bg-green-50/50",
                 operation === Operation.OUT &&
-                  "bg-red-600 text-background hover:bg-red-700",
+                  "border border-red-200 bg-red-50/50",
+                operation === Operation.NOONE &&
+                  "border border-blue-200 bg-blue-50/50",
               )}
-              onClick={() => form.setValue("operation", Operation.OUT)}
             >
-              <ArrowDownCircle className="h-4 w-4" />
-              Saída
-            </Button>
-          </div>
+              <UpdateStockItemForm form={form} product={product} />
+            </div>
 
-          {/* Form container with contextual styling */}
-          <div
-            className={cn(
-              "mb-4 w-full rounded-lg transition-all",
-              operation === Operation.IN && "border-green-200 bg-green-50",
-              operation === Operation.OUT && "border-red-200 bg-red-50",
-              operation === Operation.NOONE && "border-blue-200 bg-blue-50",
-            )}
-          >
-            <UpdateStockItemForm product={product} form={form} />
+            {/* Espaçador para o teclado */}
+            {keyboardVisible && <div className="h-4" />}
           </div>
-
-          {/* Spacer for keyboard */}
-          {keyboardVisible && <div className="h-20" />}
         </ScrollArea>
 
+        {/* Footer fixo */}
         <DialogFooter
           className={cn(
-            "mt-4 gap-2 transition-all duration-300 sm:gap-0",
-            keyboardVisible && "sticky bottom-0 border-t bg-background pt-4",
+            "gap-2 border-t bg-background p-4 pt-2 sm:gap-0",
+            keyboardVisible && "sticky bottom-0",
           )}
         >
           <Button
             type="button"
             variant="outline"
             onClick={() => setOpen(false)}
+            size="sm"
+            className="flex-1 sm:flex-none"
           >
             Cancelar
           </Button>
@@ -295,8 +299,9 @@ export function UpdateStockModal({ product }: Props) {
           <Button
             type="submit"
             disabled={isPending}
+            size="sm"
             className={cn(
-              "gap-2 text-background",
+              "flex-1 gap-2 text-background sm:flex-none",
               operation === Operation.IN && "bg-green-600 hover:bg-green-700",
               operation === Operation.OUT && "bg-red-600 hover:bg-red-700",
               operation === Operation.NOONE && "bg-blue-600 hover:bg-blue-700",
@@ -308,15 +313,15 @@ export function UpdateStockModal({ product }: Props) {
             ) : (
               <>
                 {operation === Operation.IN ? (
-                  <ArrowDownCircle className="h-4 w-4" />
+                  <ArrowDownCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                 ) : operation === Operation.OUT ? (
-                  <ArrowUpCircle className="h-4 w-4" />
+                  <ArrowUpCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                 ) : (
-                  <Save className="h-4 w-4" />
+                  <Save className="h-3 w-3 sm:h-4 sm:w-4" />
                 )}
-                {operation === Operation.NOONE
-                  ? "Salvar Alterações"
-                  : "Atualizar Estoque"}
+                <span className="text-xs sm:text-sm">
+                  {operation === Operation.NOONE ? "Salvar" : "Atualizar"}
+                </span>
               </>
             )}
           </Button>
