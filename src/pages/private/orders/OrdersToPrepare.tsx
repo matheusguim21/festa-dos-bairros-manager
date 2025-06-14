@@ -14,7 +14,7 @@ export default function OrdersToPrepare() {
 
     const socket = io(url, {
       transports: ["websocket"],
-      query: { stallId: user!.stall.id },
+      query: { stallId: user!.stall?.id },
     });
 
     socket.on("connect", () => console.log("✅ conectado ao socket"));

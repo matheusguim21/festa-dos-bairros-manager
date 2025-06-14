@@ -83,8 +83,8 @@ export const roleRoutes: Record<Role, RoleRoute[]> = {
   ],
   [Role.ADMIN]: [
     {
-      path: "venda",
-      label: "Venda",
+      path: "lancamentos",
+      label: "Lançamentos",
       element: <StallOrder />,
       icon: <Store size={20} />,
     },

@@ -51,7 +51,7 @@ export const productsService = {
       name: data.productName,
       price: data.price,
       quantity: data.productAmount,
-      stallId: data.stallId,
+      stallId: Number(data.stallId),
       criticalStock: data.criticalStock,
     });
     console.log("Response: ", response.request.response);

@@ -7,7 +7,6 @@ import { ShoppingCart, Trash2, CheckCircle, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useAuth } from "@/contexts/Auth.context";
 import { ordersService } from "@/api/orders.service";
 import { numberFormatterToCurrency } from "@/lib/utils";
 import { type OrderItem, useSaleStore } from "@/store/SaleStore";
@@ -16,13 +15,13 @@ interface Props {
   items: OrderItem[];
   total: number;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  stallId: number;
 }
 
-export function OrderSummaryBar({ items, total, setOpen }: Props) {
+export function OrderSummaryBar({ items, total, setOpen, stallId }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { clear } = useSaleStore();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
 
   const { mutate } = useMutation({
     mutationFn: ordersService.createOrder,
@@ -55,7 +54,7 @@ export function OrderSummaryBar({ items, total, setOpen }: Props) {
         productId: item.product.id,
         quantity: item.quantity,
       })),
-      stallId: user!.stall!.id,
+      stallId,
     });
   };
 

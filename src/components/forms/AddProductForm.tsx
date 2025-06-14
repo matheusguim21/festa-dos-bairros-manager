@@ -30,7 +30,7 @@ const AddProductSchema = z.object({
     .min(2, "Campo obrigatório"),
   productAmount: z.coerce.number().min(1, "O valor deve ser maior que 0"),
   price: z.coerce.number().min(1, "O valor deve ser maior que 0"),
-  stallId: z.number({
+  stallId: z.string({
     message: "A barraca é obrigatória",
   }),
   criticalStock: z.coerce.number(),
@@ -68,7 +68,7 @@ export function AddProductForm({ handleCloseModal }: Props) {
       price: 0,
       productName: "",
       criticalStock: 0,
-      stallId: user?.stall?.id,
+      stallId: user?.stall?.id.toString(),
     },
   });
   const queryClient = useQueryClient();
@@ -137,7 +137,7 @@ export function AddProductForm({ handleCloseModal }: Props) {
             <FormItem>
               <FormLabel>Barraca</FormLabel>
               <FormControl>
-                <StallSelectInput field={field} />
+                <StallSelectInput {...field} />
               </FormControl>
             </FormItem>
           )}

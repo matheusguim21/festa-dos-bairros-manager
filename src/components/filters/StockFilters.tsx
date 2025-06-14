@@ -18,17 +18,16 @@ export function StockFilters({ form }: Props) {
   return (
     <div className="flex gap-5">
       <Form {...form}>
-        <form>
+        <form className="flex gap-3 xs:w-full xs:flex-col md:w-full md:flex-row">
           <FormField
             control={form.control}
             name="productName"
             render={({ field: { name, onChange, disabled, value } }) => (
-              <FormItem className="flex w-96 items-center gap-4 rounded-xl border bg-secondary p-0">
-                <div className="h-full rounded-s-xl bg-muted-foreground/10 p-2">
-                  <Search className="text-muted-foreground" />
-                </div>
+              <FormItem className="flex w-full items-center gap-4 rounded border bg-secondary p-0">
+                <Search className="ml-2 text-muted-foreground" />
+
                 <Input
-                  className="border-0 placeholder:text-gray-400 sm:text-sm"
+                  className="w-full border-0 placeholder:text-gray-400 sm:text-sm"
                   placeholder="nome do produto"
                   value={value}
                   onChange={onChange}
@@ -45,7 +44,7 @@ export function StockFilters({ form }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <StallSelectInput field={field} />
+                    <StallSelectInput {...field} />
                   </FormControl>
                 </FormItem>
               )}

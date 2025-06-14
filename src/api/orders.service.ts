@@ -20,6 +20,7 @@ interface GetAllOrdersRequest {
   search?: string;
   page?: string;
   limit?: string;
+  stallId?: number;
 }
 
 export const ordersService = {
@@ -38,6 +39,7 @@ export const ordersService = {
     limit,
     page,
     search,
+    stallId,
   }: GetAllOrdersRequest = {}): Promise<GetAllOrdersResponse> {
     try {
       const response = await api.get("/orders", {
@@ -45,6 +47,7 @@ export const ordersService = {
           limit,
           page,
           search,
+          stallId,
         },
       });
       console.log("response getAllorders: ", response);

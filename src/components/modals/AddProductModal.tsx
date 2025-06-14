@@ -18,7 +18,11 @@ export function AddProductModal() {
   };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger onClick={() => setIsOpen(true)} asChild>
+      <DialogTrigger
+        className="h-11 xs:w-full md:max-w-[300px]"
+        onClick={() => setIsOpen(true)}
+        asChild
+      >
         <Button>
           <Plus size={20} className="text-background" />
           <span className="uppercase text-background">Novo Produto</span>

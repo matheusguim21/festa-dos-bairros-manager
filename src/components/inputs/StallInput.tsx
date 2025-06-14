@@ -9,26 +9,15 @@ import {
 } from "../ui/select";
 import { getAllStalls } from "@/api/shared/get-stalls";
 import { useMemo } from "react";
-import { ControllerRenderProps, FieldPath } from "react-hook-form";
 import { useAuth } from "@/contexts/Auth.context";
 import { Role } from "@/types/Role";
 
-interface Props<
-  TFieldValues extends Record<string, any>,
-  TName extends FieldPath<TFieldValues>,
-> {
-  field: ControllerRenderProps<TFieldValues, TName>;
+interface StallSelectInputProps {
+  onChange: (value: string) => void;
+  value: string | undefined;
 }
 
-interface StallSelectInputProps<
-  TFieldValues extends Record<string, any>,
-  TName extends FieldPath<TFieldValues>,
-> extends Props<TFieldValues, TName> {}
-
-export function StallSelectInput<
-  TFieldValues extends Record<string, any>,
-  TName extends FieldPath<TFieldValues>,
->({ field }: StallSelectInputProps<TFieldValues, TName>) {
+export function StallSelectInput({ onChange, value }: StallSelectInputProps) {
   const { user } = useAuth();
   const { data } = useQuery({
     queryKey: ["stalls"],
@@ -49,10 +38,10 @@ export function StallSelectInput<
   return (
     <Select
       disabled={user?.role !== Role.ADMIN}
-      onValueChange={(val) => field.onChange(Number(val))}
-      value={String(field.value)}
+      onValueChange={(val) => onChange(val)}
+      value={value}
     >
-      <SelectTrigger className="h-11">
+      <SelectTrigger className="h-11 w-full">
         <SelectValue placeholder="Selecione a Barraca" />
       </SelectTrigger>
       <SelectContent>

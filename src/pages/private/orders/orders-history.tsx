@@ -8,6 +8,7 @@ import { Pagination } from "@/components/pagination";
 import { z } from "zod";
 
 import { PageSelector } from "@/components/filters/PageSelector";
+import { StallSelectInput } from "@/components/inputs/StallInput";
 
 const searchOrdersSchema = z.object({
   search: z.string().optional(),
@@ -21,19 +22,17 @@ export default function Vendas() {
   // const [searchParams, setSearchParams] = useSearchParams();
   const [limit, setLimit] = useState("5");
   const [page, setPage] = useState("1");
+  const [stallId, setStallId] = useState<string | undefined>(undefined);
 
   const { data } = useQuery({
-    queryKey: ["sales", page, limit],
+    queryKey: ["sales", page, limit, stallId],
     queryFn: () =>
-      user?.role === "ADMIN"
-        ? ordersService.getAllOrders({
-            limit,
-            page: page ?? "1",
-          })
-        : ordersService.getAllOrdersByStall(user!.stall.id, {
-            limit,
-            page: page ?? "1",
-          }),
+      ordersService.getAllOrders({
+        limit,
+        page: page ?? "1",
+        stallId: user?.stall?.id ?? Number(stallId ?? 0) ?? undefined,
+      }),
+
     enabled: true,
     placeholderData: keepPreviousData,
   });
@@ -70,6 +69,10 @@ export default function Vendas() {
         {data && (
           <>
             <div className="flex w-full flex-wrap gap-5">
+              <StallSelectInput
+                onChange={(e) => setStallId(e)}
+                value={stallId}
+              />
               <span className="right-0 w-full truncate text-end">
                 Total de {data.totalElements} Pedidos
               </span>

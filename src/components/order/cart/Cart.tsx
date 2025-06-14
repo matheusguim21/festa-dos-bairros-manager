@@ -31,16 +31,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ordersService } from "@/api/orders.service";
-import { useAuth } from "@/contexts/Auth.context";
 import { OrderItemsList } from "./OrderItemsLis";
 import { OrderSummaryBar } from "./OrderSummaryBar";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { OrderSummaryForm } from "@/components/forms/OrderSummaryForm";
 
-export function Cart() {
+export function Cart({ stallId }: { stallId: number }) {
   const queryClient = useQueryClient();
-
-  const { user } = useAuth();
 
   const [open, setOpen] = React.useState(false);
   const isMobile = useIsMobile();
@@ -79,7 +76,7 @@ export function Cart() {
         productId: item.product.id,
         quantity: item.quantity,
       })),
-      stallId: user!.stall.id,
+      stallId,
     });
   };
 
@@ -88,7 +85,12 @@ export function Cart() {
   return isMobile ? (
     // --- MOBILE (Drawer) ---
     <Drawer open={open} onOpenChange={setOpen}>
-      <OrderSummaryBar items={items} setOpen={setOpen} total={total} />
+      <OrderSummaryBar
+        items={items}
+        setOpen={setOpen}
+        total={total}
+        stallId={stallId}
+      />
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>
@@ -116,7 +118,12 @@ export function Cart() {
   ) : (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTitle>
-        <OrderSummaryBar items={items} setOpen={setOpen} total={total} />
+        <OrderSummaryBar
+          items={items}
+          setOpen={setOpen}
+          total={total}
+          stallId={stallId}
+        />
       </DialogTitle>
 
       <DialogContent className="sm:max-w-[425px]">

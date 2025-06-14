@@ -24,7 +24,7 @@ export function Stock() {
     resolver: zodResolver(SearchStockItemSchema),
     defaultValues: {
       productName: "",
-      stallId: user?.stall?.id.toString() ?? "Selecione uma barrac",
+      stallId: user?.stall?.id.toString() ?? undefined,
     },
   });
 
@@ -78,8 +78,8 @@ export function Stock() {
       </section> */}
 
       <section>
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-col justify-between gap-2 md:flex-row">
+        <div className="flex items-center gap-5 xs:w-full xs:flex-col">
+          <div className="flex w-full flex-col justify-between gap-2 md:flex-row">
             <StockFilters form={form} />
             {!isMobile && <AddProductModal />}
           </div>
