@@ -78,7 +78,7 @@ export function Stock() {
       </section> */}
 
       <section>
-        <div className="flex items-center gap-5 xs:w-full xs:flex-col">
+        <div className="flex flex-wrap items-center gap-5 xs:w-full xs:flex-col">
           <div className="flex w-full flex-col justify-between gap-2 md:flex-row">
             <StockFilters form={form} />
             {!isMobile && <AddProductModal />}

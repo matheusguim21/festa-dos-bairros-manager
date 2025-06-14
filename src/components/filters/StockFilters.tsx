@@ -18,7 +18,7 @@ export function StockFilters({ form }: Props) {
   return (
     <div className="flex gap-5">
       <Form {...form}>
-        <form className="flex gap-3 xs:w-full xs:flex-col md:w-full md:flex-row">
+        <form className="flex flex-wrap gap-3 xs:w-full xs:flex-col md:w-full md:flex-row">
           <FormField
             control={form.control}
             name="productName"
