@@ -21,7 +21,7 @@ export function StockProductsCard({ product }: Props) {
   const isOutOfStock = product.quantity <= 0;
 
   return (
-    <Card className="overflow-hidden transition-all duration-200 hover:shadow-md sm:w-full lg:w-fit">
+    <Card className="overflow-hidden transition-all duration-200 hover:shadow-md xs:w-full md:w-[400px]">
       <CardContent className="flex h-full flex-col justify-between gap-3 p-5">
         <div className="space-y-2">
           {/* Header with name and price */}
