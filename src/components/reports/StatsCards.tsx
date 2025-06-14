@@ -54,11 +54,9 @@ export function StatsCards({ stats, pagination }: StatsCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-xl font-bold sm:text-2xl">
-            {stats.totalSold.toLocaleString("pt-BR")}
+            {pagination?.totalUnitsSold.toLocaleString("pt-BR")}
           </div>
-          <p className="text-xs text-muted-foreground">
-            {pagination ? "na página atual" : "no total"}
-          </p>
+          <p className="text-xs text-muted-foreground">no total</p>
         </CardContent>
       </Card>
 
@@ -71,9 +69,7 @@ export function StatsCards({ stats, pagination }: StatsCardsProps) {
           <div className="text-xl font-bold sm:text-2xl">
             {numberFormatter.format(receitaTotal?.totalRevenue ?? 0)}
           </div>
-          <p className="text-xs text-muted-foreground">
-            {pagination ? "da página atual" : "total gerada"}
-          </p>
+          <p className="text-xs text-muted-foreground">total gerada da festa</p>
         </CardContent>
       </Card>
     </div>

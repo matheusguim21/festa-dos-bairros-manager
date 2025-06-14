@@ -2,7 +2,7 @@ import CashierPage from "@/pages/private/cashier/CashierPage";
 import Vendas from "@/pages/private/orders/orders-history";
 import OrdersToPrepare from "@/pages/private/orders/OrdersToPrepare";
 import StallOrder from "@/pages/private/orders/stall-order";
-import ReportsPage from "@/pages/private/relatorios/Page";
+import ReportsPage from "@/pages/private/relatorios/ReportsPage";
 import { Stock } from "@/pages/private/stock";
 import { Role } from "@/types/Role";
 import {

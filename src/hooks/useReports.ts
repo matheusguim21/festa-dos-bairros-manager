@@ -12,6 +12,7 @@ import {
 } from "@/types/schemas/reports-filter-schema";
 import { getAllBestSellingProducts } from "@/api/reports/get-all-best-selled-products ";
 import { ProductStats } from "@/types/reports";
+import { useDebouncedValue } from "./useDebouncedValue";
 
 export function useBestSellingProducts() {
   const form = useForm<FiltersFormData>({
@@ -26,17 +27,24 @@ export function useBestSellingProducts() {
   });
 
   // Watch form values for reactive filtering
-  const filters = form.watch();
+  const watchedFilters = form.watch();
+  const debouncedSearchTerm = useDebouncedValue(watchedFilters.searchTerm, 300);
+  const debouncedFilters = {
+    ...watchedFilters,
+    searchTerm: debouncedSearchTerm,
+  };
 
   const { data: productsResponse, isLoading: productsLoading } = useQuery({
-    queryKey: ["best-selling-products", filters],
+    queryKey: ["best-selling-products", debouncedFilters],
     queryFn: () =>
       getAllBestSellingProducts(
-        filters.page,
-        filters.limit,
-        filters.searchTerm || undefined,
-        filters.stallId !== "all" ? filters.stallId : undefined,
-        filters.sortBy,
+        debouncedFilters.page,
+        debouncedFilters.limit,
+        debouncedFilters.searchTerm || undefined,
+        debouncedFilters.stallId !== "all"
+          ? debouncedFilters.stallId
+          : undefined,
+        debouncedFilters.sortBy,
       ),
     placeholderData: (previousData) => previousData, // Keep previous data while loading
   });
@@ -75,7 +83,7 @@ export function useBestSellingProducts() {
       currentValues.stallId !== "all" ||
       currentValues.sortBy !== "totalSold"
     );
-  }, [form, filters]);
+  }, [form, debouncedFilters]);
 
   const goToPage = (page: number) => {
     form.setValue("page", page);
@@ -89,7 +97,7 @@ export function useBestSellingProducts() {
   return {
     // Form
     form,
-    filters,
+    debouncedFilters,
 
     // Data
     products,

@@ -16,6 +16,7 @@ export interface PaginatedResponse<T> {
   totalPages: number;
   page: number;
   limit: number;
+  totalUnitsSold: number;
 }
 
 export type SortOption = "totalSold" | "revenue" | "name";

@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/reports/PageHeader";
 import { ProductsList } from "@/components/reports/ProductsList";
 import { StatsCards } from "@/components/reports/StatsCards";
 import { useBestSellingProducts } from "@/hooks/useReports";
+import { useEffect } from "react";
 
 export default function BestSellingProductsPage() {
   const {
@@ -18,8 +19,15 @@ export default function BestSellingProductsPage() {
     hasActiveFilters,
     goToPage,
     changePageSize,
-    filters,
+    debouncedFilters,
   } = useBestSellingProducts();
+  useEffect(() => {
+    form.setValue("page", 0);
+  }, [
+    debouncedFilters.sortBy,
+    debouncedFilters.searchTerm,
+    debouncedFilters.stallId,
+  ]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -41,7 +49,7 @@ export default function BestSellingProductsPage() {
           isLoading={productsLoading}
           onPageChange={goToPage}
           onPageSizeChange={(pageSize) => changePageSize(Number(pageSize))}
-          filters={filters}
+          filters={debouncedFilters}
         />
       </div>
     </div>
