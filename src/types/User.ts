@@ -6,5 +6,5 @@ export type User = {
   username: string;
   name: string;
   role: Role;
-  stall: Stall;
+  stall?: Stall;
 };

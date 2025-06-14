@@ -15,25 +15,31 @@ import { AddProductModal } from "@/components/modals/AddProductModal";
 
 const SearchStockItemSchema = z.object({
   productName: z.string(),
+  stallId: z.string(),
 });
-type SearchStockItemForm = z.infer<typeof SearchStockItemSchema>;
+export type SearchStockItemForm = z.infer<typeof SearchStockItemSchema>;
 export function Stock() {
   const { user } = useAuth();
-  const { control, watch } = useForm<SearchStockItemForm>({
+  const form = useForm<SearchStockItemForm>({
     resolver: zodResolver(SearchStockItemSchema),
     defaultValues: {
       productName: "",
+      stallId: user?.stall?.id.toString() ?? "Selecione uma barrac",
     },
   });
 
+  const selectedStall = form.watch("stallId");
   const isMobile = useIsMobile();
 
   const { data } = useQuery({
-    queryKey: ["products"],
+    queryKey: ["products", selectedStall],
     queryFn: () =>
-      user?.role === "ADMIN"
-        ? productsService.getAllProducts()
-        : productsService.getAllProductsFromStallById(user!.stall.id),
+      productsService.getAllProducts({
+        stallId:
+          user?.stall?.id ??
+          (selectedStall ? Number(selectedStall) : undefined),
+      }),
+
     enabled: true,
     placeholderData: keepPreviousData,
   });
@@ -48,7 +54,7 @@ export function Stock() {
   // ...
 
   // Dentro do seu componente:
-  const productNameFilter = watch("productName") || "";
+  const productNameFilter = form.watch("productName") || "";
   const debouncedName = useDebouncedValue<string>(productNameFilter, 300);
 
   const filteredProducts = data?.content.filter((product) => {
@@ -74,7 +80,7 @@ export function Stock() {
       <section>
         <div className="flex flex-col gap-5">
           <div className="flex flex-col justify-between gap-2 md:flex-row">
-            <StockFilters control={control} />
+            <StockFilters form={form} />
             {!isMobile && <AddProductModal />}
           </div>
           {isMobile && <AddProductModal />}

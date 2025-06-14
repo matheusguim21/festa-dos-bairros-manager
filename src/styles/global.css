@@ -77,3 +77,30 @@
     @apply bg-background text-foreground;
   }
 }
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Improve viewport handling on mobile */
+@supports (height: 100dvh) {
+  .dialog-content-mobile {
+    max-height: 100dvh;
+  }
+}
+
+/* Smooth transitions for keyboard appearance */
+.dialog-content {
+  transition: max-height 0.3s ease-in-out;
+}
+
+/* Ensure proper scrolling behavior */
+.scroll-area-viewport {
+  scroll-behavior: smooth;
+}

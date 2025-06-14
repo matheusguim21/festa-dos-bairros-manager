@@ -23,6 +23,7 @@ interface getAllProductsRequest {
   search?: string;
   page?: number;
   limit?: number;
+  stallId?: number;
 }
 
 export const productsService = {
@@ -30,12 +31,14 @@ export const productsService = {
     limit = 50,
     page = 1,
     search,
+    stallId,
   }: getAllProductsRequest = {}): Promise<getAllProductsResponse> {
     const response = await api.get("products", {
       params: {
         search,
         page,
         limit,
+        stallId,
       },
     });
     console.log("Request: ", response.config.params);
@@ -55,24 +58,24 @@ export const productsService = {
     return response.data;
   },
 
-  async getAllProductsFromStallById(
-    stallId: number,
-    { limit, page, search }: getAllProductsRequest = {},
-  ): Promise<getAllProductsResponse> {
-    try {
-      const response = await api.get(`/products/stall/${stallId}/`, {
-        params: {
-          search,
-          page,
-          limit,
-        },
-      });
-      console.log("Response getAllProductsFromStallById:  ", response.data);
-      return response.data;
-    } catch (error: any) {
-      throw error;
-    }
-  },
+  // async getAllProductsFromStallById(
+  //   stallId: number,
+  //   { limit, page, search }: getAllProductsRequest = {},
+  // ): Promise<getAllProductsResponse> {
+  //   try {
+  //     const response = await api.get(`/products/stall/${stallId}/`, {
+  //       params: {
+  //         search,
+  //         page,
+  //         limit,
+  //       },
+  //     });
+  //     console.log("Response getAllProductsFromStallById:  ", response.data);
+  //     return response.data;
+  //   } catch (error: any) {
+  //     throw error;
+  //   }
+  // },
   async updateProduct(formData: UpdateProductsRequest) {
     try {
       const response = await api.put<UpdateProductsRequest>(

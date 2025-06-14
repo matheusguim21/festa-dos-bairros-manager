@@ -10,7 +10,10 @@ export default function StallOrder() {
 
   const { data } = useQuery({
     queryKey: ["products"],
-    queryFn: () => productsService.getAllProductsFromStallById(user!.stall.id),
+    queryFn: () =>
+      productsService.getAllProducts({
+        stallId: user?.stall?.id,
+      }),
     enabled: true,
     placeholderData: keepPreviousData,
   });

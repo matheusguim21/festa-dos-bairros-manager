@@ -4,13 +4,16 @@ import { ControllerRenderProps, FieldValues } from "react-hook-form";
 
 type PriceInputProps<T extends FieldValues> = {
   field: ControllerRenderProps<T, any>;
+  className?: string | undefined;
 };
 
 export function PriceInput<T extends FieldValues>({
   field,
+  className,
 }: PriceInputProps<T>) {
   return (
     <Input
+      className={className}
       value={
         field.value !== undefined && field.value !== null
           ? (field.value / 1).toLocaleString("pt-BR", {

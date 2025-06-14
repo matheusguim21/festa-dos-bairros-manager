@@ -10,20 +10,17 @@ import {
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+
 import { Button } from "../ui/button";
 import { toast } from "sonner";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { productsService } from "@/api/productService";
-import { getAllStalls } from "@/api/shared/get-stalls";
-import { useMemo } from "react";
+
 import { PriceInput } from "../inputs/PriceInput";
+import { StallSelectInput } from "../inputs/StallInput";
+import { CriticalStockInput } from "../inputs/CriticalStockinput";
+import { QuantityInput } from "../inputs/QuantityInpur";
+import { useAuth } from "@/contexts/Auth.context";
 
 const AddProductSchema = z.object({
   productName: z
@@ -36,7 +33,7 @@ const AddProductSchema = z.object({
   stallId: z.number({
     message: "A barraca é obrigatória",
   }),
-  criticalStock: z.coerce.number().min(1, "O valor deve ser maior que 0"),
+  criticalStock: z.coerce.number(),
 
   // productImage: z
   //   .instanceof(File, {
@@ -63,6 +60,7 @@ interface Props {
 }
 
 export function AddProductForm({ handleCloseModal }: Props) {
+  const { user } = useAuth();
   const form = useForm<AddProductForm>({
     resolver: zodResolver(AddProductSchema),
     defaultValues: {
@@ -70,6 +68,7 @@ export function AddProductForm({ handleCloseModal }: Props) {
       price: 0,
       productName: "",
       criticalStock: 0,
+      stallId: user?.stall?.id,
     },
   });
   const queryClient = useQueryClient();
@@ -90,19 +89,6 @@ export function AddProductForm({ handleCloseModal }: Props) {
     },
   });
 
-  const { data } = useQuery({
-    queryKey: ["stalls"],
-    queryFn: getAllStalls,
-  });
-
-  const options = useMemo(() => {
-    const stalls = data || [];
-    return stalls.map((stall) => ({
-      value: stall.id.toString(),
-      label: stall.name,
-    }));
-  }, [data]);
-
   const onSubmit = async (formData: AddProductForm) => {
     console.log(formData);
 
@@ -119,7 +105,11 @@ export function AddProductForm({ handleCloseModal }: Props) {
             <FormItem>
               <FormLabel>Nome do Produto</FormLabel>
               <FormControl>
-                <Input className="flex-1" {...field} />
+                <Input
+                  placeholder="Digite o nome"
+                  className="flex-1"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -144,26 +134,11 @@ export function AddProductForm({ handleCloseModal }: Props) {
           control={form.control}
           name="stallId"
           render={({ field }) => (
-            <FormItem className="">
+            <FormItem>
               <FormLabel>Barraca</FormLabel>
-              <Select
-                onValueChange={(val) => field.onChange(Number(val))}
-                value={String(field.value)}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecione a Barraca" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {options.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
+              <FormControl>
+                <StallSelectInput field={field} />
+              </FormControl>
             </FormItem>
           )}
         />
@@ -174,41 +149,12 @@ export function AddProductForm({ handleCloseModal }: Props) {
             <FormItem>
               <FormLabel>Quantidade</FormLabel>
               <FormControl>
-                <Input
-                  className="w-full"
-                  type="number"
-                  {...field}
-                  // className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                />
+                <QuantityInput {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        {/* <FormField
-          control={form.control}
-          name="productImage"
-          render={({ field }) => (
-            <FormItem className="w-52">
-              <FormLabel>Imagem do Produto</FormLabel>
-              <FormControl>
-                <Input
-                  title="Escolha uma imagem"
-                  placeholder="Escolha uma imagem"
-                  type="file"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) field.onChange(file);
-                  }}
-                  onBlur={field.onBlur}
-                  name={field.name}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
       </div>
       <div>
         <FormField
@@ -218,12 +164,7 @@ export function AddProductForm({ handleCloseModal }: Props) {
             <FormItem>
               <FormLabel>Estoque Ctítico</FormLabel>
               <FormControl>
-                <Input
-                  className="w-full"
-                  type="number"
-                  {...field}
-                  // className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                />
+                <CriticalStockInput field={field} />
               </FormControl>
               <FormMessage />
             </FormItem>

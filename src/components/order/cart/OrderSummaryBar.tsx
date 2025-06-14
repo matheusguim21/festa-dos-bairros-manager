@@ -55,7 +55,7 @@ export function OrderSummaryBar({ items, total, setOpen }: Props) {
         productId: item.product.id,
         quantity: item.quantity,
       })),
-      stallId: user!.stall.id,
+      stallId: user!.stall!.id,
     });
   };
 
