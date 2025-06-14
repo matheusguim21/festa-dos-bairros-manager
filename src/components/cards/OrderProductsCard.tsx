@@ -44,14 +44,14 @@ export function OrderProductsCard({ product }: Props) {
   return (
     <Card
       className={cn(
-        "w-full overflow-hidden transition-all duration-200",
+        "overflow-hidden transition-all duration-200 xs:w-full lg:w-[400px]",
         isOutOfStock ? "opacity-60 grayscale" : "hover:shadow-lg",
       )}
     >
       <CardContent className="p-0">
-        <div className="flex flex-col sm:flex-row">
+        <div className="grid grid-cols-[2fr_1fr]">
           {/* Product info section */}
-          <div className="flex-1 p-4">
+          <div className="p-4">
             <div className="flex items-start justify-between gap-2">
               <h3 className="line-clamp-2 text-lg font-medium">
                 {product.name}
@@ -96,7 +96,7 @@ export function OrderProductsCard({ product }: Props) {
           {/* Quantity controls section */}
           <div
             className={cn(
-              "flex items-center justify-between gap-2 bg-muted/50 p-4 sm:w-36 sm:flex-col sm:items-center sm:justify-center sm:border-l",
+              "flex items-center justify-between gap-2 bg-muted/50 p-4 xs:w-full xs:flex-col xs:items-center xs:justify-center xs:border-l",
               isOutOfStock && "pointer-events-none",
             )}
           >

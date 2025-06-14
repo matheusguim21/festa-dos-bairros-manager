@@ -20,7 +20,7 @@ export default function StallOrder() {
       <Helmet title="Ínicio" />
       {/* padding bottom para não cobrir os cards */}
       {/* <h1 className="text-2xl font-bold">Venda</h1> */}
-      <div className="mb-24 flex flex-wrap gap-5">
+      <div className="flex w-full flex-wrap gap-5 xs:mb-32 sm:mb-24">
         {data?.content.map((product) => (
           <OrderProductsCard key={product.id} product={product} />
         ))}
