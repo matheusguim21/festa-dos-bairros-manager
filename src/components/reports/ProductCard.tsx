@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { AlertTriangle, Package, PackageX } from "lucide-react";
 import type { BestSellingProduct } from "@/types/reports";
 
 interface ProductCardProps {
@@ -32,6 +33,69 @@ export function ProductCard({ product, index }: ProductCardProps) {
     return numberFormatter.format(value);
   };
 
+  // Determine stock status
+  const getStockStatus = () => {
+    // Verificar se os campos de estoque existem
+    const currentStock = product.currentStock ?? product.quantity ?? 0;
+    const criticalStock = product.criticalStock ?? 5; // Default para 5 se não existir
+
+    console.log("Stock info:", { currentStock, criticalStock, product }); // Debug
+
+    if (currentStock === 0) {
+      return {
+        level: "out-of-stock",
+        label: "Sem estoque",
+        variant: "destructive" as const,
+        color: "text-red-600",
+        bgColor: "bg-red-50",
+        borderColor: "border-red-200",
+        icon: PackageX,
+        showStock: true,
+      };
+    }
+
+    if (currentStock <= criticalStock) {
+      return {
+        level: "critical",
+        label: "Crítico",
+        variant: "destructive" as const,
+        color: "text-red-600",
+        bgColor: "bg-red-50",
+        borderColor: "border-red-200",
+        icon: AlertTriangle,
+        showStock: true,
+      };
+    }
+
+    if (currentStock <= criticalStock * 2) {
+      return {
+        level: "low",
+        label: "Baixo",
+        variant: "secondary" as const,
+        color: "text-yellow-600",
+        bgColor: "bg-yellow-50",
+        borderColor: "border-yellow-200",
+        icon: AlertTriangle,
+        showStock: true,
+      };
+    }
+
+    return {
+      level: "normal",
+      label: "Normal",
+      variant: "outline" as const,
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+      borderColor: "border-green-200",
+      icon: Package,
+      showStock: true,
+    };
+  };
+
+  const stockStatus = getStockStatus();
+  const StockIcon = stockStatus.icon;
+  const currentStock = product.currentStock ?? product.quantity ?? 0;
+
   return (
     <Card className="w-full overflow-hidden transition-all hover:shadow-md">
       <CardContent className="p-3 sm:p-6">
@@ -46,13 +110,22 @@ export function ProductCard({ product, index }: ProductCardProps) {
               <h3 className="truncate text-sm font-semibold leading-tight">
                 {product.name}
               </h3>
-              <div className="mt-1">
+              <div className="mt-1 flex flex-wrap gap-1">
                 <Badge
                   variant="outline"
                   className="max-w-full px-2 py-0.5 text-xs"
                 >
                   <span className="truncate">{product.stall.name}</span>
                 </Badge>
+                {stockStatus.showStock && (
+                  <Badge
+                    variant={stockStatus.variant}
+                    className="gap-1 px-2 py-0.5 text-xs"
+                  >
+                    <StockIcon className="h-3 w-3" />
+                    {stockStatus.label}
+                  </Badge>
+                )}
               </div>
             </div>
           </div>
@@ -79,6 +152,17 @@ export function ProductCard({ product, index }: ProductCardProps) {
                 {formatMobileValue(product.price)}
               </span>
             </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-muted-foreground">Estoque:</span>
+              <div className="flex items-center gap-1">
+                <span className={`text-sm font-bold ${stockStatus.color}`}>
+                  {currentStock}
+                </span>
+                {stockStatus.level !== "normal" && (
+                  <StockIcon className={`h-3 w-3 ${stockStatus.color}`} />
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -94,18 +178,27 @@ export function ProductCard({ product, index }: ProductCardProps) {
                 <h3 className="line-clamp-2 font-semibold leading-tight">
                   {product.name}
                 </h3>
-                <div className="mt-1">
+                <div className="mt-1 flex flex-wrap gap-2">
                   <Badge variant="outline" className="text-xs">
                     {product.stall.name}
                   </Badge>
+                  {stockStatus.showStock && stockStatus.level !== "normal" && (
+                    <Badge
+                      variant={stockStatus.variant}
+                      className="gap-1 text-xs"
+                    >
+                      <StockIcon className="h-3 w-3" />
+                      {stockStatus.label}
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>
 
             <Separator />
 
-            {/* Stats in 3 columns for tablet */}
-            <div className="grid grid-cols-3 gap-4 text-center">
+            {/* Stats in 4 columns for tablet */}
+            <div className="grid grid-cols-4 gap-3 text-center">
               <div className="space-y-1">
                 <div className="text-base font-bold text-primary">
                   {product.totalSold}
@@ -124,6 +217,17 @@ export function ProductCard({ product, index }: ProductCardProps) {
                 </div>
                 <div className="text-xs text-muted-foreground">preço</div>
               </div>
+              <div className="space-y-1">
+                <div
+                  className={`flex items-center justify-center gap-1 text-base font-bold ${stockStatus.color}`}
+                >
+                  {currentStock}
+                  {stockStatus.level !== "normal" && (
+                    <StockIcon className="h-3 w-3" />
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground">estoque</div>
+              </div>
             </div>
           </div>
         </div>
@@ -137,14 +241,20 @@ export function ProductCard({ product, index }: ProductCardProps) {
             </div>
             <div className="min-w-0 flex-1">
               <h3 className="truncate font-semibold">{product.name}</h3>
-              <div className="mt-1">
+              <div className="mt-1 flex gap-2">
                 <Badge variant="outline">{product.stall.name}</Badge>
+                {stockStatus.showStock && stockStatus.level !== "normal" && (
+                  <Badge variant={stockStatus.variant} className="gap-1">
+                    <StockIcon className="h-3 w-3" />
+                    {stockStatus.label}
+                  </Badge>
+                )}
               </div>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="grid shrink-0 grid-cols-3 gap-8 text-center">
+          <div className="grid shrink-0 grid-cols-4 gap-6 text-center">
             <div>
               <div className="text-lg font-bold text-primary">
                 {product.totalSold}
@@ -162,6 +272,17 @@ export function ProductCard({ product, index }: ProductCardProps) {
                 {numberFormatter.format(product.price)}
               </div>
               <div className="text-xs text-muted-foreground">preço unit.</div>
+            </div>
+            <div>
+              <div
+                className={`flex items-center justify-center gap-1 text-lg font-bold ${stockStatus.color}`}
+              >
+                {currentStock}
+                {stockStatus.level !== "normal" && (
+                  <StockIcon className="h-4 w-4" />
+                )}
+              </div>
+              <div className="text-xs text-muted-foreground">estoque</div>
             </div>
           </div>
         </div>

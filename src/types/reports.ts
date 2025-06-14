@@ -1,13 +1,18 @@
+// Adicione estes campos ao tipo BestSellingProduct
 export interface BestSellingProduct {
   id: number;
   name: string;
+  price: number;
+  totalSold: number;
+  revenue: number;
+  // Campos de estoque - use um dos dois nomes dependendo da sua API
+  currentStock?: number; // ou quantity?: number
+  quantity?: number; // campo alternativo
+  criticalStock?: number;
   stall: {
     id: number;
     name: string;
   };
-  totalSold: number;
-  revenue: number;
-  price: number;
 }
 
 export interface PaginatedResponse<T> {

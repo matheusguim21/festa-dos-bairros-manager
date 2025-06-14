@@ -271,7 +271,7 @@ export function UpdateStockModal({ product }: Props) {
               operation === Operation.NOONE && "border-blue-200 bg-blue-50",
             )}
           >
-            <UpdateStockItemForm form={form} />
+            <UpdateStockItemForm product={product} form={form} />
           </div>
 
           {/* Spacer for keyboard */}
