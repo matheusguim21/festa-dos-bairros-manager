@@ -5,8 +5,6 @@ import {
   PaginatedResponse,
   ProductStats,
 } from "@/types/reports";
-import { useQuery } from "@tanstack/react-query";
-import { getTotalRevenue } from "@/api/reports/get-total-revenue";
 
 interface StatsCardsProps {
   stats: ProductStats;
@@ -17,11 +15,6 @@ export function StatsCards({ stats, pagination }: StatsCardsProps) {
   const numberFormatter = new Intl.NumberFormat("pt-BR", {
     currency: "BRL",
     style: "currency",
-  });
-
-  const { data: receitaTotal } = useQuery({
-    queryKey: ["receita"],
-    queryFn: getTotalRevenue,
   });
 
   return (
@@ -67,7 +60,7 @@ export function StatsCards({ stats, pagination }: StatsCardsProps) {
         </CardHeader>
         <CardContent>
           <div className="text-xl font-bold sm:text-2xl">
-            {numberFormatter.format(receitaTotal?.totalRevenue ?? 0)}
+            {numberFormatter.format(pagination?.totalRevenue ?? 0)}
           </div>
           <p className="text-xs text-muted-foreground">total gerada da festa</p>
         </CardContent>

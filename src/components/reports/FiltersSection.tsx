@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
-import { Search, Filter, X } from "lucide-react";
+import { Search, Filter, X, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
@@ -21,8 +21,12 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FiltersFormData } from "@/types/schemas/reports-filter-schema";
-import { Stall } from "@/types/Stall";
+import type { FiltersFormData } from "@/types/schemas/reports-filter-schema";
+import {
+  FESTIVAL_DATES,
+  formatFestivalDateSafe,
+} from "@/types/schemas/reports-filter-schema";
+import type { Stall } from "@/types/Stall";
 
 interface FiltersSectionProps {
   form: UseFormReturn<FiltersFormData>;
@@ -116,7 +120,60 @@ export function FiltersSection({
               />
 
               {/* Filters Grid */}
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {/* Festival Day Filter */}
+                <FormField
+                  control={form.control}
+                  name="festivalDay"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-1.5">
+                        <Calendar className="h-4 w-4" />
+                        Dia da Festa
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Todos os dias" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">Todos os dias</SelectItem>
+                            <SelectItem value={FESTIVAL_DATES.DAY_1}>
+                              <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-2">
+                                  <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                                  <span className="font-medium">
+                                    1º Dia de Festa
+                                  </span>
+                                </div>
+                                <span className="text-xs text-muted-foreground">
+                                  {formatFestivalDateSafe(FESTIVAL_DATES.DAY_1)}
+                                </span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value={FESTIVAL_DATES.DAY_2}>
+                              <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-2">
+                                  <div className="h-2 w-2 rounded-full bg-purple-500"></div>
+                                  <span className="font-medium">
+                                    2º Dia de Festa
+                                  </span>
+                                </div>
+                                <span className="text-xs text-muted-foreground">
+                                  {formatFestivalDateSafe(FESTIVAL_DATES.DAY_2)}
+                                </span>
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
                 {/* Stall Filter */}
                 <FormField
                   control={form.control}
@@ -182,7 +239,7 @@ export function FiltersSection({
                 />
 
                 {/* Clear Filters - Desktop */}
-                <div className="hidden items-end sm:flex lg:col-span-1">
+                <div className="hidden items-end sm:flex">
                   <Button
                     type="button"
                     variant="outline"

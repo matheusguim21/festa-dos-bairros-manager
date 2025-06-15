@@ -6,6 +6,7 @@ interface Filters {
   sortBy?: string;
   page?: number;
   limit?: number;
+  festivalDay: string;
 }
 
 export async function downloadExcelReport({
@@ -28,6 +29,8 @@ export async function downloadExcelReport({
 
   if (debouncedFilters.sortBy)
     url.searchParams.set("sortBy", debouncedFilters.sortBy);
+  if (debouncedFilters.festivalDay && debouncedFilters.festivalDay !== "all")
+    url.searchParams.set("date", debouncedFilters.festivalDay);
 
   try {
     const response = await axios.get(url.toString(), {

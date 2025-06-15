@@ -7,12 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { getAllStalls } from "@/api/shared/get-stalls";
 import {
-  FiltersFormData,
+  type FiltersFormData,
   filtersSchema,
 } from "@/types/schemas/reports-filter-schema";
-import { getAllBestSellingProducts } from "@/api/reports/get-all-best-selled-products ";
-import { ProductStats } from "@/types/reports";
+import type { ProductStats } from "@/types/reports";
 import { useDebouncedValue } from "./useDebouncedValue";
+import { getAllBestSellingProducts } from "@/api/reports/get-all-best-selled-products ";
 
 export function useBestSellingProducts() {
   const form = useForm<FiltersFormData>({
@@ -21,6 +21,7 @@ export function useBestSellingProducts() {
       searchTerm: "",
       stallId: "all",
       sortBy: "totalSold",
+      festivalDay: "all", // ✅ Adicionado
       page: 0,
       limit: 10,
     },
@@ -63,6 +64,7 @@ export function useBestSellingProducts() {
       searchTerm: "",
       stallId: "all",
       sortBy: "totalSold",
+      festivalDay: "all", // ✅ Adicionado
       page: 0,
       limit: 10,
     });
@@ -73,7 +75,8 @@ export function useBestSellingProducts() {
     return (
       currentValues.searchTerm !== "" ||
       currentValues.stallId !== "all" ||
-      currentValues.sortBy !== "totalSold"
+      currentValues.sortBy !== "totalSold" ||
+      currentValues.festivalDay !== "all" // ✅ Adicionado
     );
   }, [form, debouncedFilters]);
 

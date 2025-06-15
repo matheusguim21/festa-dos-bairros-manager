@@ -22,6 +22,7 @@ export interface PaginatedResponse<T> {
   page: number;
   limit: number;
   totalUnitsSold: number;
+  totalRevenue: number;
 }
 
 export type SortOption = "totalSold" | "revenue" | "name";
