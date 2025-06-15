@@ -39,8 +39,6 @@ export function ProductCard({ product, index }: ProductCardProps) {
     const currentStock = product.currentStock ?? product.quantity ?? 0;
     const criticalStock = product.criticalStock ?? 5; // Default para 5 se não existir
 
-    console.log("Stock info:", { currentStock, criticalStock, product }); // Debug
-
     if (currentStock === 0) {
       return {
         level: "out-of-stock",

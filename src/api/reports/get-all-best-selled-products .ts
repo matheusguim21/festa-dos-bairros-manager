@@ -1,12 +1,11 @@
 import type { BestSellingProduct, PaginatedResponse } from "@/types/reports";
 import { api } from "../api";
 
-export async function getAllBestSellingProducts(
-  page = 0,
-  limit = 10,
-  search?: string,
-  stallId?: string,
-  stockLevel?: string,
+interface BestSellingParams {
+  page: number;
+  limit: number;
+  search?: string;
+  stallId?: string;
   sortBy?:
     | "totalSold"
     | "revenue"
@@ -14,8 +13,18 @@ export async function getAllBestSellingProducts(
     | "stock-asc"
     | "stock-desc"
     | "price-asc"
-    | "price-desc",
-): Promise<PaginatedResponse<BestSellingProduct>> {
+    | "price-desc";
+  stockLevel?: string;
+}
+
+export async function getAllBestSellingProducts({
+  page = 0,
+  limit = 10,
+  search,
+  stallId,
+  stockLevel,
+  sortBy,
+}: BestSellingParams): Promise<PaginatedResponse<BestSellingProduct>> {
   const response = await api.get("/reports", {
     params: {
       page,

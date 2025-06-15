@@ -34,18 +34,10 @@ export function useBestSellingProducts() {
     searchTerm: debouncedSearchTerm,
   };
 
+  console.log("debounced sort: ", debouncedFilters.sortBy);
   const { data: productsResponse, isLoading: productsLoading } = useQuery({
     queryKey: ["best-selling-products", debouncedFilters],
-    queryFn: () =>
-      getAllBestSellingProducts(
-        debouncedFilters.page,
-        debouncedFilters.limit,
-        debouncedFilters.searchTerm || undefined,
-        debouncedFilters.stallId !== "all"
-          ? debouncedFilters.stallId
-          : undefined,
-        debouncedFilters.sortBy,
-      ),
+    queryFn: () => getAllBestSellingProducts({ ...debouncedFilters }),
     placeholderData: (previousData) => previousData, // Keep previous data while loading
   });
 
