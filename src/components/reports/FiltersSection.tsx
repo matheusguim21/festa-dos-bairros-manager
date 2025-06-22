@@ -120,7 +120,7 @@ export function FiltersSection({
               />
 
               {/* Filters Grid */}
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid items-end gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {/* Festival Day Filter */}
                 <FormField
                   control={form.control}
